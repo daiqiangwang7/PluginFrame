@@ -1,0 +1,112 @@
+#ifndef PLUGINMANAGER_H
+#define PLUGINMANAGER_H
+
+#include "IPlugin.h"
+
+#include <QList>
+#include <QObject>
+
+class MessageBus;
+class PluginContext;
+class QPluginLoader;
+
+/*
+ * 表示插件当前生命周期状态。
+ * 用于诊断插件加载、初始化、启动、停止和失败过程。
+ */
+enum class PluginState
+{
+    Loaded,
+    Initialized,
+    Started,
+    Stopped,
+    Failed
+};
+
+/*
+ * 保存单个插件的运行记录。
+ * 包含动态库加载器、插件实例、文件路径、名称、错误信息和生命周期状态。
+ */
+struct PluginRecord
+{
+    QPluginLoader *loader = nullptr;
+    IPlugin *plugin = nullptr;
+    QString filePath;
+    QString name;
+    QString errorString;
+    PluginState state = PluginState::Loaded;
+};
+
+class PluginManager : public QObject
+{
+    Q_OBJECT
+
+public:
+    /*
+     * 创建插件管理器。
+     * parent 为 Qt 对象父节点，用于纳入 Qt 对象生命周期管理。
+     */
+    explicit PluginManager(QObject *parent = nullptr);
+    /*
+     * 析构插件管理器。
+     * 析构时会依次停止所有 Started 状态的插件。
+     */
+    ~PluginManager() override;
+
+    /*
+     * 从指定目录加载插件动态库。
+     * path 为插件目录路径，函数会过滤动态库并启动有效插件。
+     */
+    void loadPlugins(const QString &path);
+
+    /*
+     * 获取插件管理器持有的消息总线。
+     * 返回值可供宿主组件发布或订阅框架内部消息。
+     */
+    MessageBus *messageBus() const;
+
+    /*
+     * 获取当前插件记录快照。
+     * 返回值包含插件文件路径、名称、状态和加载错误信息。
+     */
+    QList<PluginRecord> pluginRecords() const;
+
+    /*
+     * 查找指定接口类型的插件实例。
+     * 返回所有可 qobject_cast 为 T 类型的已加载插件。
+     */
+    template<typename T>
+    QList<T *> findPlugins() const
+    {
+        QList<T *> result;
+        for (const PluginRecord &record : m_records) {
+            if (record.state != PluginState::Started || !record.plugin) {
+                continue;
+            }
+
+            if (T *typedPlugin = qobject_cast<T *>(record.plugin)) {
+                result.append(typedPlugin);
+            }
+        }
+        return result;
+    }
+
+    /*
+     * 添加测试用插件实例。
+     * 该函数仅用于单元测试验证插件查询逻辑。
+     */
+    void addPluginForTest(IPlugin *plugin);
+
+private:
+    /*
+     * 停止指定插件记录。
+     * record 为需要停止的插件记录，只有 Started 状态会触发 stop()。
+     */
+    void stopPlugin(PluginRecord &record);
+
+    MessageBus *m_messageBus = nullptr;
+    PluginContext *m_context = nullptr;
+    QList<PluginRecord> m_records;
+};
+
+#endif // PLUGINMANAGER_H

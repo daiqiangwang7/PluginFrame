@@ -25,12 +25,12 @@ bool HelloPlugin::initialize()
 
     m_widget = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout(m_widget);
-    m_label = new QLabel(QStringLiteral("Hello from Plugin! (Qt5)"), m_widget);
+    m_label = new QLabel(QStringLiteral("你好，来自视图插件！"), m_widget);
     m_label->setAlignment(Qt::AlignCenter);
-    m_timeLabel = new QLabel(QStringLiteral("Waiting for time service..."), m_widget);
+    m_timeLabel = new QLabel(QStringLiteral("等待时间服务..."), m_widget);
     m_timeLabel->setAlignment(Qt::AlignCenter);
 
-    QPushButton *button = new QPushButton(QStringLiteral("Publish hello.clicked"), m_widget);
+    QPushButton *button = new QPushButton(QStringLiteral("发布 hello.clicked 消息"), m_widget);
     QObject::connect(button, &QPushButton::clicked, m_widget, [this]() {
         if (m_context && m_context->messageBus()) {
             m_context->messageBus()->publish(QStringLiteral("hello.clicked"),
@@ -73,7 +73,7 @@ void HelloPlugin::start()
         if (m_timeLabel) {
             const QString timeText = payload.value(QStringLiteral("time")).toString();
             if (!timeText.isEmpty()) {
-                m_timeLabel->setText(QStringLiteral("Time service: %1").arg(timeText));
+                m_timeLabel->setText(QStringLiteral("时间服务：%1").arg(timeText));
             }
         }
     });
@@ -99,5 +99,5 @@ QWidget *HelloPlugin::widget()
 
 QString HelloPlugin::displayName() const
 {
-    return QStringLiteral("Hello Tab");
+    return QStringLiteral("你好插件");
 }

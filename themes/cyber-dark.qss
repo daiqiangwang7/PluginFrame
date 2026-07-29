@@ -1,0 +1,95 @@
+QWidget {
+    background: #081018;
+    color: #D7F9FF;
+    font-family: "Microsoft YaHei", "Segoe UI";
+    font-size: 13px;
+}
+
+QWidget#ShellRoot {
+    background: #060B12;
+    border: 1px solid #00E5FF;
+}
+
+QWidget#TitleBar {
+    background: #09131F;
+    border-bottom: 1px solid #00E5FF;
+}
+
+QLabel#WindowTitle {
+    color: #00E5FF;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+QPushButton#WindowButton,
+QPushButton#ThemeButton {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #D7F9FF;
+    min-width: 38px;
+    min-height: 28px;
+}
+
+QPushButton#WindowButton:hover,
+QPushButton#ThemeButton:hover {
+    background: #102B3D;
+    border-color: #00E5FF;
+    color: #00E5FF;
+}
+
+QPushButton#CloseButton:hover {
+    background: #FF2D75;
+    border-color: #FF2D75;
+    color: #FFFFFF;
+}
+
+QTabWidget::pane {
+    border: 1px solid #15384A;
+    top: -1px;
+}
+
+QTabBar::tab {
+    background: #0B1724;
+    color: #9FDDE8;
+    border: 1px solid #15384A;
+    padding: 8px 18px;
+    margin-right: 2px;
+}
+
+QTabBar::tab:selected {
+    background: #102B3D;
+    color: #00E5FF;
+    border-bottom-color: #102B3D;
+}
+
+QPushButton {
+    background: #0E2130;
+    color: #D7F9FF;
+    border: 1px solid #00A8CC;
+    padding: 7px 14px;
+}
+
+QPushButton:hover {
+    background: #13344A;
+    border-color: #00E5FF;
+}
+
+QLabel {
+    color: #D7F9FF;
+}
+
+QTableWidget {
+    background: #081018;
+    alternate-background-color: #0C1722;
+    gridline-color: #15384A;
+    border: 1px solid #15384A;
+    selection-background-color: #123A52;
+    selection-color: #FFFFFF;
+}
+
+QHeaderView::section {
+    background: #0E2130;
+    color: #00E5FF;
+    border: 1px solid #15384A;
+    padding: 6px;
+}

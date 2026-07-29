@@ -4,7 +4,10 @@
 #include <QMainWindow>
 
 class PluginManager;
+class ThemeManager;
+class TitleBar;
 class QTabWidget;
+class QWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -25,7 +28,7 @@ public:
 private:
     /*
      * 初始化主窗口界面。
-     * 创建 QTabWidget 作为中央部件并设置窗口基础属性。
+     * 创建自绘标题栏和内容区并设置窗口基础属性。
      */
     void setupUi();
     /*
@@ -34,8 +37,17 @@ private:
      */
     void loadPlugins();
 
+    /*
+     * 切换当前应用皮肤。
+     * 在深色和浅色赛博朋克主题之间切换。
+     */
+    void toggleTheme();
+
+    QWidget *m_shellRoot = nullptr;
+    TitleBar *m_titleBar = nullptr;
     QTabWidget *m_tabs = nullptr;
     PluginManager *m_pluginManager = nullptr;
+    ThemeManager *m_themeManager = nullptr;
 };
 
 #endif // MAINWINDOW_H

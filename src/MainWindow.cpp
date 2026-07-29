@@ -4,9 +4,12 @@
 #include "MessageBus.h"
 #include "PluginInspectorWidget.h"
 #include "PluginManager.h"
+#include "ThemeManager.h"
+#include "TitleBar.h"
 
 #include <QApplication>
 #include <QTabWidget>
+#include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,10 +20,30 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::setupUi()
 {
-    m_tabs = new QTabWidget(this);
-    setCentralWidget(m_tabs);
-    setWindowTitle(QStringLiteral("Qt5 Plugin Framework Demo"));
-    resize(800, 600);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
+    setAttribute(Qt::WA_TranslucentBackground, false);
+
+    m_themeManager = new ThemeManager(this);
+    m_themeManager->applyTheme(qApp, QStringLiteral("cyber-dark"));
+
+    m_shellRoot = new QWidget(this);
+    m_shellRoot->setObjectName(QStringLiteral("ShellRoot"));
+    QVBoxLayout *rootLayout = new QVBoxLayout(m_shellRoot);
+    rootLayout->setContentsMargins(1, 1, 1, 1);
+    rootLayout->setSpacing(0);
+
+    m_titleBar = new TitleBar(m_shellRoot);
+    m_titleBar->setTitle(QStringLiteral("插件框架"));
+    connect(m_titleBar, &TitleBar::themeToggleRequested, this, &MainWindow::toggleTheme);
+
+    m_tabs = new QTabWidget(m_shellRoot);
+
+    rootLayout->addWidget(m_titleBar);
+    rootLayout->addWidget(m_tabs, 1);
+
+    setCentralWidget(m_shellRoot);
+    setWindowTitle(QStringLiteral("插件框架"));
+    resize(1100, 700);
 }
 
 void MainWindow::loadPlugins()
@@ -38,11 +61,18 @@ void MainWindow::loadPlugins()
 
     PluginInspectorWidget *inspector = new PluginInspectorWidget(this);
     inspector->setPluginRecords(m_pluginManager->pluginRecords());
-    m_tabs->addTab(inspector, QStringLiteral("Plugins"));
+    m_tabs->addTab(inspector, QStringLiteral("插件诊断"));
 
     if (m_pluginManager->messageBus()) {
         m_pluginManager->messageBus()->publish(
             QStringLiteral("app.status"),
-            {{QStringLiteral("text"), QStringLiteral("Host loaded HelloPlugin through MessageBus")}});
+            {{QStringLiteral("text"), QStringLiteral("宿主已通过消息总线加载插件")}});
+    }
+}
+
+void MainWindow::toggleTheme()
+{
+    if (m_themeManager) {
+        m_themeManager->toggleTheme(qApp);
     }
 }

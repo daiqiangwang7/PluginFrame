@@ -10,6 +10,9 @@
 - 插件元数据：`id`、`name`、`displayName`、`version`、`type`、`enabled`
 - 主程序自动加载 `plugins` 目录下的动态库
 - 内置插件诊断页：展示插件名称、类型、版本、状态、路径和错误信息
+- 自绘赛博朋克风格主窗口和标题栏
+- 内置深色、浅色两套赛博朋克主题
+- 默认中文界面
 - 示例视图插件：`HelloPlugin`
 - 示例服务插件：`TimeServicePlugin`
 
@@ -91,3 +94,22 @@ payload:
 - `State`：插件生命周期状态。
 - `Path`：插件动态库路径。
 - `Error`：插件加载或元数据解析失败原因。
+
+## 界面主题
+
+主程序使用自绘标题栏，不使用 Qt 默认系统标题栏。标题栏提供：
+
+- 皮肤切换
+- 最小化
+- 最大化/还原
+- 关闭
+- 拖动窗口
+
+内置主题文件位于：
+
+```text
+themes/cyber-dark.qss
+themes/cyber-light.qss
+```
+
+默认主题为 `cyber-dark`，界面默认使用中文文案。

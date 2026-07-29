@@ -1,4 +1,8 @@
 add_library(plugin_host_lib
+    ThemeManager.cpp
+    ThemeManager.h
+    TitleBar.cpp
+    TitleBar.h
     PluginMetadata.cpp
     PluginMetadata.h
     PluginContext.cpp
@@ -34,4 +38,10 @@ target_link_libraries(PluginHost
 
 set_target_properties(PluginHost PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
+add_custom_command(TARGET PluginHost POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/themes
+            $<TARGET_FILE_DIR:PluginHost>/themes
 )

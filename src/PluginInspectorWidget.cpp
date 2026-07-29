@@ -37,12 +37,12 @@ void PluginInspectorWidget::setupUi()
     m_table = new QTableWidget(this);
     m_table->setColumnCount(6);
     m_table->setHorizontalHeaderLabels({
-        QStringLiteral("Name"),
-        QStringLiteral("Type"),
-        QStringLiteral("Version"),
-        QStringLiteral("State"),
-        QStringLiteral("Path"),
-        QStringLiteral("Error")
+        QStringLiteral("名称"),
+        QStringLiteral("类型"),
+        QStringLiteral("版本"),
+        QStringLiteral("状态"),
+        QStringLiteral("路径"),
+        QStringLiteral("错误")
     });
     m_table->horizontalHeader()->setStretchLastSection(true);
     m_table->verticalHeader()->setVisible(false);

@@ -14,20 +14,20 @@ QString pluginStateToString(PluginState state)
 {
     switch (state) {
     case PluginState::Loaded:
-        return QStringLiteral("Loaded");
+        return QStringLiteral("已加载");
     case PluginState::Initialized:
-        return QStringLiteral("Initialized");
+        return QStringLiteral("已初始化");
     case PluginState::Started:
-        return QStringLiteral("Started");
+        return QStringLiteral("运行中");
     case PluginState::Stopped:
-        return QStringLiteral("Stopped");
+        return QStringLiteral("已停止");
     case PluginState::Disabled:
-        return QStringLiteral("Disabled");
+        return QStringLiteral("已禁用");
     case PluginState::Failed:
-        return QStringLiteral("Failed");
+        return QStringLiteral("失败");
     }
 
-    return QStringLiteral("Unknown");
+    return QStringLiteral("未知");
 }
 
 PluginManager::PluginManager(QObject *parent)

@@ -1,7 +1,7 @@
 {
   "id": "com.pluginframe.hello",
   "name": "HelloPlugin",
-  "displayName": "Hello Plugin",
+  "displayName": "你好插件",
   "version": "1.0.0",
   "type": "view",
   "enabled": true

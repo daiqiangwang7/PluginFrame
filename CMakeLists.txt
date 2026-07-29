@@ -16,7 +16,7 @@ endif()
 
 option(BUILD_PLUGIN_FRAME_TESTS "Build PluginFrame unit tests" OFF)
 
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Xml REQUIRED)
 if(BUILD_PLUGIN_FRAME_TESTS)
     find_package(Qt5 COMPONENTS Test REQUIRED)
 endif()

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+struct AppConfig;
 class PluginManager;
 class ThemeManager;
 class TitleBar;
@@ -42,6 +43,12 @@ private:
      * 在深色和浅色赛博朋克主题之间切换。
      */
     void toggleTheme();
+
+    /*
+     * 加载应用 XML 配置。
+     * 返回解析后的配置，配置不存在或解析失败时返回默认配置。
+     */
+    AppConfig loadAppConfig() const;
 
     QWidget *m_shellRoot = nullptr;
     TitleBar *m_titleBar = nullptr;

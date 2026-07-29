@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <theme default="cyber-dark"/>
+
+  <plugins>
+    <plugin id="com.pluginframe.hello" enabled="true" area="central"/>
+    <plugin id="com.pluginframe.time-service" enabled="true"/>
+  </plugins>
+</application>

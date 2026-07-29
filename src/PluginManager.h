@@ -5,6 +5,7 @@
 #include "PluginMetadata.h"
 
 #include <QList>
+#include <QHash>
 #include <QObject>
 
 class MessageBus;
@@ -69,6 +70,12 @@ public:
     void loadPlugins(const QString &path);
 
     /*
+     * 设置插件启用状态。
+     * pluginId 为插件唯一标识，enabled 为 false 时加载阶段会跳过该插件。
+     */
+    void setPluginEnabled(const QString &pluginId, bool enabled);
+
+    /*
      * 获取插件管理器持有的消息总线。
      * 返回值可供宿主组件发布或订阅框架内部消息。
      */
@@ -115,6 +122,7 @@ private:
 
     MessageBus *m_messageBus = nullptr;
     PluginContext *m_context = nullptr;
+    QHash<QString, bool> m_enabledOverrides;
     QList<PluginRecord> m_records;
 };
 

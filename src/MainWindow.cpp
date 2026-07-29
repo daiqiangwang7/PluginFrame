@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 
+#include "AppConfig.h"
 #include "IViewPlugin.h"
 #include "MessageBus.h"
 #include "PluginInspectorWidget.h"
@@ -24,7 +25,8 @@ void MainWindow::setupUi()
     setAttribute(Qt::WA_TranslucentBackground, false);
 
     m_themeManager = new ThemeManager(this);
-    m_themeManager->applyTheme(qApp, QStringLiteral("cyber-dark"));
+    const AppConfig config = loadAppConfig();
+    m_themeManager->applyTheme(qApp, config.defaultTheme);
 
     m_shellRoot = new QWidget(this);
     m_shellRoot->setObjectName(QStringLiteral("ShellRoot"));
@@ -48,16 +50,30 @@ void MainWindow::setupUi()
 
 void MainWindow::loadPlugins()
 {
+    const AppConfig config = loadAppConfig();
     m_pluginManager = new PluginManager(this);
+    for (auto it = config.pluginSettings.cbegin(); it != config.pluginSettings.cend(); ++it) {
+        m_pluginManager->setPluginEnabled(it.key(), it.value().enabled);
+    }
+
     const QString pluginsPath = QApplication::applicationDirPath() + QStringLiteral("/plugins");
     m_pluginManager->loadPlugins(pluginsPath);
 
     const auto views = m_pluginManager->findPlugins<IViewPlugin>();
     for (IViewPlugin *view : views) {
         if (QWidget *viewWidget = view->widget()) {
+            WindowArea area = WindowArea::Central;
+            const auto records = m_pluginManager->pluginRecords();
+            for (const PluginRecord &record : records) {
+                if (record.plugin == view) {
+                    area = config.pluginArea(record.metadata.id);
+                    break;
+                }
+            }
+
             m_windowManager->registerWindow({view->name(),
                                              view->displayName(),
-                                             WindowArea::Central,
+                                             area,
                                              viewWidget});
         }
     }
@@ -81,4 +97,11 @@ void MainWindow::toggleTheme()
     if (m_themeManager) {
         m_themeManager->toggleTheme(qApp);
     }
+}
+
+AppConfig MainWindow::loadAppConfig() const
+{
+    QString errorString;
+    const QString filePath = QApplication::applicationDirPath() + QStringLiteral("/config/app.xml");
+    return AppConfig::fromFile(filePath, &errorString);
 }

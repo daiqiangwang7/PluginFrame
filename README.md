@@ -126,3 +126,38 @@ themes/cyber-light.qss
 - `RightDock`：右侧停靠区。
 - `BottomDock`：底部停靠区，默认承载插件诊断窗口。
 - `Floating`：独立浮动窗口。
+
+## XML 配置
+
+框架启动时会读取：
+
+```text
+config/app.xml
+```
+
+当前支持配置：
+
+- 默认主题
+- 插件启用状态
+- 视图插件注册区域
+
+示例：
+
+```xml
+<application>
+  <theme default="cyber-dark"/>
+
+  <plugins>
+    <plugin id="com.pluginframe.hello" enabled="true" area="central"/>
+    <plugin id="com.pluginframe.time-service" enabled="true"/>
+  </plugins>
+</application>
+```
+
+`area` 支持：
+
+- `central`
+- `leftDock`
+- `rightDock`
+- `bottomDock`
+- `floating`

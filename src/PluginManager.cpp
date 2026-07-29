@@ -76,7 +76,8 @@ void PluginManager::loadPlugins(const QString &path)
             continue;
         }
 
-        if (!metadata.enabled) {
+        const bool enabledByConfig = m_enabledOverrides.value(metadata.id, true);
+        if (!metadata.enabled || !enabledByConfig) {
             PluginRecord record;
             record.loader = loader;
             record.filePath = filePath;
@@ -148,6 +149,11 @@ void PluginManager::loadPlugins(const QString &path)
 MessageBus *PluginManager::messageBus() const
 {
     return m_messageBus;
+}
+
+void PluginManager::setPluginEnabled(const QString &pluginId, bool enabled)
+{
+    m_enabledOverrides.insert(pluginId, enabled);
 }
 
 QList<PluginRecord> PluginManager::pluginRecords() const

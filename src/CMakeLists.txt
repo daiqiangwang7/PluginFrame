@@ -1,4 +1,6 @@
 add_library(plugin_host_lib
+    AppConfig.cpp
+    AppConfig.h
     ThemeManager.cpp
     ThemeManager.h
     TitleBar.cpp
@@ -26,6 +28,7 @@ target_link_libraries(plugin_host_lib
     PUBLIC
         Qt5::Core
         Qt5::Widgets
+        Qt5::Xml
         framework
 )
 
@@ -46,4 +49,7 @@ add_custom_command(TARGET PluginHost POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_SOURCE_DIR}/themes
             $<TARGET_FILE_DIR:PluginHost>/themes
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/config
+            $<TARGET_FILE_DIR:PluginHost>/config
 )

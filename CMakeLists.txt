@@ -24,6 +24,7 @@ endif()
 add_subdirectory(framework)
 add_subdirectory(src)
 add_subdirectory(plugins/HelloPlugin)
+add_subdirectory(plugins/TimeServicePlugin)
 
 if(BUILD_PLUGIN_FRAME_TESTS AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt)
     enable_testing()

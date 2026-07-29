@@ -1,0 +1,8 @@
+{
+  "id": "com.pluginframe.time-service",
+  "name": "TimeServicePlugin",
+  "displayName": "Time Service",
+  "version": "1.0.0",
+  "type": "service",
+  "enabled": true
+}

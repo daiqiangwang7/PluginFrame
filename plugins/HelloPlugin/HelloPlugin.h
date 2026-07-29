@@ -63,6 +63,7 @@ public:
 private:
     IPluginContext *m_context = nullptr;
     QLabel *m_label = nullptr;
+    QLabel *m_timeLabel = nullptr;
     QWidget *m_widget = nullptr;
 };
 

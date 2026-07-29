@@ -27,6 +27,8 @@ bool HelloPlugin::initialize()
     QVBoxLayout *layout = new QVBoxLayout(m_widget);
     m_label = new QLabel(QStringLiteral("Hello from Plugin! (Qt5)"), m_widget);
     m_label->setAlignment(Qt::AlignCenter);
+    m_timeLabel = new QLabel(QStringLiteral("Waiting for time service..."), m_widget);
+    m_timeLabel->setAlignment(Qt::AlignCenter);
 
     QPushButton *button = new QPushButton(QStringLiteral("Publish hello.clicked"), m_widget);
     QObject::connect(button, &QPushButton::clicked, m_widget, [this]() {
@@ -38,6 +40,7 @@ bool HelloPlugin::initialize()
 
     layout->addStretch();
     layout->addWidget(m_label);
+    layout->addWidget(m_timeLabel);
     layout->addWidget(button);
     layout->addStretch();
 
@@ -64,6 +67,16 @@ void HelloPlugin::start()
             }
         }
     });
+
+    m_context->messageBus()->subscribe(QStringLiteral("time.tick"), this,
+                                       [this](const QString &, const QVariantMap &payload) {
+        if (m_timeLabel) {
+            const QString timeText = payload.value(QStringLiteral("time")).toString();
+            if (!timeText.isEmpty()) {
+                m_timeLabel->setText(QStringLiteral("Time service: %1").arg(timeText));
+            }
+        }
+    });
 }
 
 void HelloPlugin::stop()
@@ -71,6 +84,7 @@ void HelloPlugin::stop()
     delete m_widget;
     m_widget = nullptr;
     m_label = nullptr;
+    m_timeLabel = nullptr;
 }
 
 QString HelloPlugin::name() const

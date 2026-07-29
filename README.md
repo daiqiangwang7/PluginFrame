@@ -10,6 +10,7 @@
 - 插件元数据：`id`、`name`、`displayName`、`version`、`type`、`enabled`
 - 主程序自动加载 `plugins` 目录下的动态库
 - 示例视图插件：`HelloPlugin`
+- 示例服务插件：`TimeServicePlugin`
 
 ## 构建
 
@@ -53,3 +54,26 @@ build/bin/Debug/plugins/
 - `version`：插件版本。
 - `type`：插件类型，目前支持 `view` 和 `service`。
 - `enabled`：是否启用插件，`false` 时主程序会跳过加载。
+
+## 示例插件
+
+### HelloPlugin
+
+`HelloPlugin` 是一个视图插件，提供一个标签页界面。它会订阅：
+
+- `app.status`：显示宿主程序状态。
+- `time.tick`：显示时间服务发布的当前时间。
+
+点击界面按钮时，它会发布：
+
+- `hello.clicked`
+
+### TimeServicePlugin
+
+`TimeServicePlugin` 是一个无 UI 的服务插件。插件启动后会启动一个 `QTimer`，每秒发布：
+
+```text
+topic: time.tick
+payload:
+  time: yyyy-MM-dd HH:mm:ss
+```

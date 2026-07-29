@@ -2,6 +2,7 @@
 
 #include "IViewPlugin.h"
 #include "MessageBus.h"
+#include "PluginInspectorWidget.h"
 #include "PluginManager.h"
 
 #include <QApplication>
@@ -34,6 +35,10 @@ void MainWindow::loadPlugins()
             m_tabs->addTab(viewWidget, view->displayName());
         }
     }
+
+    PluginInspectorWidget *inspector = new PluginInspectorWidget(this);
+    inspector->setPluginRecords(m_pluginManager->pluginRecords());
+    m_tabs->addTab(inspector, QStringLiteral("Plugins"));
 
     if (m_pluginManager->messageBus()) {
         m_pluginManager->messageBus()->publish(

@@ -10,6 +10,26 @@
 #include <QLibrary>
 #include <QPluginLoader>
 
+QString pluginStateToString(PluginState state)
+{
+    switch (state) {
+    case PluginState::Loaded:
+        return QStringLiteral("Loaded");
+    case PluginState::Initialized:
+        return QStringLiteral("Initialized");
+    case PluginState::Started:
+        return QStringLiteral("Started");
+    case PluginState::Stopped:
+        return QStringLiteral("Stopped");
+    case PluginState::Disabled:
+        return QStringLiteral("Disabled");
+    case PluginState::Failed:
+        return QStringLiteral("Failed");
+    }
+
+    return QStringLiteral("Unknown");
+}
+
 PluginManager::PluginManager(QObject *parent)
     : QObject(parent)
     , m_messageBus(new MessageBus(this))

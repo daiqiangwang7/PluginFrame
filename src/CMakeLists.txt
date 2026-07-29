@@ -3,6 +3,8 @@ add_library(plugin_host_lib
     PluginMetadata.h
     PluginContext.cpp
     PluginContext.h
+    PluginInspectorWidget.cpp
+    PluginInspectorWidget.h
     PluginManager.cpp
     PluginManager.h
     MainWindow.cpp

@@ -9,6 +9,7 @@
 - 内部通信：`MessageBus` + `IPluginContext`
 - 插件元数据：`id`、`name`、`displayName`、`version`、`type`、`enabled`
 - 主程序自动加载 `plugins` 目录下的动态库
+- 内置插件诊断页：展示插件名称、类型、版本、状态、路径和错误信息
 - 示例视图插件：`HelloPlugin`
 - 示例服务插件：`TimeServicePlugin`
 
@@ -77,3 +78,16 @@ topic: time.tick
 payload:
   time: yyyy-MM-dd HH:mm:ss
 ```
+
+## 插件诊断页
+
+主程序内置 `Plugins` 标签页，用于查看当前插件加载情况。
+
+表格包含：
+
+- `Name`：插件名称。
+- `Type`：插件类型。
+- `Version`：插件版本。
+- `State`：插件生命周期状态。
+- `Path`：插件动态库路径。
+- `Error`：插件加载或元数据解析失败原因。

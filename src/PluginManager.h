@@ -40,6 +40,12 @@ struct PluginRecord
     PluginState state = PluginState::Loaded;
 };
 
+/*
+ * 将插件生命周期状态转换为可读文本。
+ * state 为插件状态枚举值，返回值用于日志和界面诊断显示。
+ */
+QString pluginStateToString(PluginState state);
+
 class PluginManager : public QObject
 {
     Q_OBJECT

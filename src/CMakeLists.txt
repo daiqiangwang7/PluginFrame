@@ -1,4 +1,6 @@
 add_library(plugin_host_lib
+    PluginMetadata.cpp
+    PluginMetadata.h
     PluginContext.cpp
     PluginContext.h
     PluginManager.cpp

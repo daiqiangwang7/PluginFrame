@@ -2,6 +2,7 @@
 #define PLUGINMANAGER_H
 
 #include "IPlugin.h"
+#include "PluginMetadata.h"
 
 #include <QList>
 #include <QObject>
@@ -12,7 +13,7 @@ class QPluginLoader;
 
 /*
  * 表示插件当前生命周期状态。
- * 用于诊断插件加载、初始化、启动、停止和失败过程。
+ * 用于诊断插件加载、初始化、启动、停止、禁用和失败过程。
  */
 enum class PluginState
 {
@@ -20,12 +21,13 @@ enum class PluginState
     Initialized,
     Started,
     Stopped,
+    Disabled,
     Failed
 };
 
 /*
  * 保存单个插件的运行记录。
- * 包含动态库加载器、插件实例、文件路径、名称、错误信息和生命周期状态。
+ * 包含动态库加载器、插件实例、文件路径、名称、元数据、错误信息和生命周期状态。
  */
 struct PluginRecord
 {
@@ -34,6 +36,7 @@ struct PluginRecord
     QString filePath;
     QString name;
     QString errorString;
+    PluginMetadata metadata;
     PluginState state = PluginState::Loaded;
 };
 

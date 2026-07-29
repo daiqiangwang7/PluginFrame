@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
+#include <QJsonObject>
 #include <QLibrary>
 #include <QPluginLoader>
 
@@ -39,12 +40,42 @@ void PluginManager::loadPlugins(const QString &path)
         }
 
         QPluginLoader *loader = new QPluginLoader(filePath, this);
+        const QJsonObject rootMetadata = loader->metaData();
+        const QJsonObject jsonMetadata = rootMetadata.value(QStringLiteral("MetaData")).toObject();
+        QString metadataError;
+        const PluginMetadata metadata = PluginMetadata::fromJsonObject(jsonMetadata, &metadataError);
+        if (!metadata.isValid()) {
+            qWarning() << "Invalid plugin metadata:" << filePath << metadataError;
+            PluginRecord record;
+            record.loader = loader;
+            record.filePath = filePath;
+            record.errorString = metadataError;
+            record.state = PluginState::Failed;
+            m_records.append(record);
+            loader->deleteLater();
+            continue;
+        }
+
+        if (!metadata.enabled) {
+            PluginRecord record;
+            record.loader = loader;
+            record.filePath = filePath;
+            record.name = metadata.name;
+            record.metadata = metadata;
+            record.state = PluginState::Disabled;
+            m_records.append(record);
+            loader->deleteLater();
+            continue;
+        }
+
         QObject *instance = loader->instance();
         if (!instance) {
             qWarning() << "Failed to load plugin:" << filePath << loader->errorString();
             PluginRecord record;
             record.loader = loader;
             record.filePath = filePath;
+            record.name = metadata.name;
+            record.metadata = metadata;
             record.errorString = loader->errorString();
             record.state = PluginState::Failed;
             m_records.append(record);
@@ -58,6 +89,8 @@ void PluginManager::loadPlugins(const QString &path)
             PluginRecord record;
             record.loader = loader;
             record.filePath = filePath;
+            record.name = metadata.name;
+            record.metadata = metadata;
             record.errorString = QStringLiteral("Loaded library is not an IPlugin");
             record.state = PluginState::Failed;
             m_records.append(record);
@@ -70,7 +103,8 @@ void PluginManager::loadPlugins(const QString &path)
         record.loader = loader;
         record.plugin = plugin;
         record.filePath = filePath;
-        record.name = plugin->name();
+        record.name = metadata.name;
+        record.metadata = metadata;
         record.state = PluginState::Loaded;
 
         plugin->setContext(m_context);
@@ -109,6 +143,11 @@ void PluginManager::addPluginForTest(IPlugin *plugin)
         PluginRecord record;
         record.plugin = plugin;
         record.name = plugin->name();
+        record.metadata.id = plugin->name();
+        record.metadata.name = plugin->name();
+        record.metadata.displayName = plugin->name();
+        record.metadata.version = QStringLiteral("test");
+        record.metadata.type = QStringLiteral("service");
         record.state = PluginState::Loaded;
 
         if (plugin->initialize()) {

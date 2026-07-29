@@ -1,6 +1,10 @@
 add_library(plugin_host_lib
     AppConfig.cpp
     AppConfig.h
+    CyberSidebar.cpp
+    CyberSidebar.h
+    StatusBarWidget.cpp
+    StatusBarWidget.h
     ThemeManager.cpp
     ThemeManager.h
     TitleBar.cpp

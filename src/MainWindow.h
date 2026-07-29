@@ -4,7 +4,9 @@
 #include <QMainWindow>
 
 struct AppConfig;
+class CyberSidebar;
 class PluginManager;
+class StatusBarWidget;
 class ThemeManager;
 class TitleBar;
 class WindowManager;
@@ -50,7 +52,15 @@ private:
      */
     AppConfig loadAppConfig() const;
 
+    /*
+     * 刷新底部状态栏。
+     * 使用当前主题和插件记录更新工作台状态摘要。
+     */
+    void updateStatusBar();
+
     QWidget *m_shellRoot = nullptr;
+    CyberSidebar *m_sidebar = nullptr;
+    StatusBarWidget *m_statusBar = nullptr;
     TitleBar *m_titleBar = nullptr;
     WindowManager *m_windowManager = nullptr;
     PluginManager *m_pluginManager = nullptr;

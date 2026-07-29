@@ -1,15 +1,18 @@
 #include "MainWindow.h"
 
 #include "AppConfig.h"
+#include "CyberSidebar.h"
 #include "IViewPlugin.h"
 #include "MessageBus.h"
 #include "PluginInspectorWidget.h"
 #include "PluginManager.h"
+#include "StatusBarWidget.h"
 #include "ThemeManager.h"
 #include "TitleBar.h"
 #include "WindowManager.h"
 
 #include <QApplication>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -39,9 +42,20 @@ void MainWindow::setupUi()
     connect(m_titleBar, &TitleBar::themeToggleRequested, this, &MainWindow::toggleTheme);
 
     m_windowManager = new WindowManager(m_shellRoot);
+    m_sidebar = new CyberSidebar(m_shellRoot);
+    m_statusBar = new StatusBarWidget(m_shellRoot);
+
+    QWidget *workspace = new QWidget(m_shellRoot);
+    workspace->setObjectName(QStringLiteral("Workspace"));
+    QHBoxLayout *workspaceLayout = new QHBoxLayout(workspace);
+    workspaceLayout->setContentsMargins(0, 0, 0, 0);
+    workspaceLayout->setSpacing(0);
+    workspaceLayout->addWidget(m_sidebar);
+    workspaceLayout->addWidget(m_windowManager, 1);
 
     rootLayout->addWidget(m_titleBar);
-    rootLayout->addWidget(m_windowManager, 1);
+    rootLayout->addWidget(workspace, 1);
+    rootLayout->addWidget(m_statusBar);
 
     setCentralWidget(m_shellRoot);
     setWindowTitle(QStringLiteral("插件框架"));
@@ -90,12 +104,15 @@ void MainWindow::loadPlugins()
             QStringLiteral("app.status"),
             {{QStringLiteral("text"), QStringLiteral("宿主已通过消息总线加载插件")}});
     }
+
+    updateStatusBar();
 }
 
 void MainWindow::toggleTheme()
 {
     if (m_themeManager) {
         m_themeManager->toggleTheme(qApp);
+        updateStatusBar();
     }
 }
 
@@ -104,4 +121,13 @@ AppConfig MainWindow::loadAppConfig() const
     QString errorString;
     const QString filePath = QApplication::applicationDirPath() + QStringLiteral("/config/app.xml");
     return AppConfig::fromFile(filePath, &errorString);
+}
+
+void MainWindow::updateStatusBar()
+{
+    if (!m_statusBar || !m_themeManager || !m_pluginManager) {
+        return;
+    }
+
+    m_statusBar->updateStatus(m_themeManager->currentTheme(), m_pluginManager->pluginRecords());
 }

@@ -10,6 +10,38 @@ QWidget#ShellRoot {
     border: 1px solid #00A8CC;
 }
 
+QWidget#Workspace {
+    background: #F7FCFD;
+}
+
+QWidget#CyberSidebar {
+    background: #E5F6F9;
+    border-right: 1px solid #A7CBD4;
+}
+
+QPushButton#SidebarButton {
+    background: #F0FBFD;
+    border: 1px solid #A7CBD4;
+    color: #274654;
+    text-align: left;
+    padding-left: 16px;
+}
+
+QPushButton#SidebarButton:hover {
+    background: #CFF0F6;
+    border-color: #00A8CC;
+    color: #006C82;
+}
+
+QWidget#CyberStatusBar {
+    background: #E5F6F9;
+    border-top: 1px solid #A7CBD4;
+}
+
+QLabel#StatusSummary {
+    color: #006C82;
+}
+
 QWidget#TitleBar {
     background: #DDF4F8;
     border-bottom: 1px solid #00A8CC;

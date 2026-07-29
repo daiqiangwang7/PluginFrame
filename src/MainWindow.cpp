@@ -6,9 +6,9 @@
 #include "PluginManager.h"
 #include "ThemeManager.h"
 #include "TitleBar.h"
+#include "WindowManager.h"
 
 #include <QApplication>
-#include <QTabWidget>
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -36,10 +36,10 @@ void MainWindow::setupUi()
     m_titleBar->setTitle(QStringLiteral("插件框架"));
     connect(m_titleBar, &TitleBar::themeToggleRequested, this, &MainWindow::toggleTheme);
 
-    m_tabs = new QTabWidget(m_shellRoot);
+    m_windowManager = new WindowManager(m_shellRoot);
 
     rootLayout->addWidget(m_titleBar);
-    rootLayout->addWidget(m_tabs, 1);
+    rootLayout->addWidget(m_windowManager, 1);
 
     setCentralWidget(m_shellRoot);
     setWindowTitle(QStringLiteral("插件框架"));
@@ -55,13 +55,19 @@ void MainWindow::loadPlugins()
     const auto views = m_pluginManager->findPlugins<IViewPlugin>();
     for (IViewPlugin *view : views) {
         if (QWidget *viewWidget = view->widget()) {
-            m_tabs->addTab(viewWidget, view->displayName());
+            m_windowManager->registerWindow({view->name(),
+                                             view->displayName(),
+                                             WindowArea::Central,
+                                             viewWidget});
         }
     }
 
     PluginInspectorWidget *inspector = new PluginInspectorWidget(this);
     inspector->setPluginRecords(m_pluginManager->pluginRecords());
-    m_tabs->addTab(inspector, QStringLiteral("插件诊断"));
+    m_windowManager->registerWindow({QStringLiteral("plugin.inspector"),
+                                     QStringLiteral("插件诊断"),
+                                     WindowArea::BottomDock,
+                                     inspector});
 
     if (m_pluginManager->messageBus()) {
         m_pluginManager->messageBus()->publish(

@@ -3,6 +3,8 @@ add_library(plugin_host_lib
     ThemeManager.h
     TitleBar.cpp
     TitleBar.h
+    WindowManager.cpp
+    WindowManager.h
     PluginMetadata.cpp
     PluginMetadata.h
     PluginContext.cpp

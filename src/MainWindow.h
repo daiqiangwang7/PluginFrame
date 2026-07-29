@@ -6,7 +6,7 @@
 class PluginManager;
 class ThemeManager;
 class TitleBar;
-class QTabWidget;
+class WindowManager;
 class QWidget;
 
 class MainWindow : public QMainWindow
@@ -33,7 +33,7 @@ private:
     void setupUi();
     /*
      * 加载应用程序目录下的插件。
-     * 视图插件会被添加到中央标签页中显示。
+     * 视图插件会被注册到窗口管理器的中心区域。
      */
     void loadPlugins();
 
@@ -45,7 +45,7 @@ private:
 
     QWidget *m_shellRoot = nullptr;
     TitleBar *m_titleBar = nullptr;
-    QTabWidget *m_tabs = nullptr;
+    WindowManager *m_windowManager = nullptr;
     PluginManager *m_pluginManager = nullptr;
     ThemeManager *m_themeManager = nullptr;
 };

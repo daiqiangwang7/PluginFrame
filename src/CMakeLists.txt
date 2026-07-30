@@ -21,6 +21,7 @@ add_library(plugin_host_lib
     PluginManager.h
     MainWindow.cpp
     MainWindow.h
+    resources.qrc
 )
 
 target_include_directories(plugin_host_lib

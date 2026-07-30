@@ -53,7 +53,9 @@ QLabel#WindowTitle {
     font-weight: 600;
 }
 
-QPushButton#WindowButton,
+QPushButton#MinimizeButton,
+QPushButton#MaximizeButton,
+QPushButton#CloseButton,
 QPushButton#ThemeButton {
     background: transparent;
     border: 1px solid transparent;
@@ -62,11 +64,28 @@ QPushButton#ThemeButton {
     min-height: 28px;
 }
 
-QPushButton#WindowButton:hover,
+QPushButton#MinimizeButton:hover,
+QPushButton#MaximizeButton:hover,
 QPushButton#ThemeButton:hover {
     background: #C7EDF4;
     border-color: #00A8CC;
     color: #006C82;
+}
+
+QPushButton#MinimizeButton {
+    qproperty-icon: url(:/icons/window/light/minimize.svg);
+}
+
+QPushButton#MaximizeButton {
+    qproperty-icon: url(:/icons/window/light/maximize.svg);
+}
+
+QPushButton#MaximizeButton[maximized="true"] {
+    qproperty-icon: url(:/icons/window/light/restore.svg);
+}
+
+QPushButton#CloseButton {
+    qproperty-icon: url(:/icons/window/light/close.svg);
 }
 
 QPushButton#CloseButton:hover {

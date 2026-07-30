@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="icons/window/dark/minimize.svg">../assets/icons/window/dark/minimize.svg</file>
+        <file alias="icons/window/dark/maximize.svg">../assets/icons/window/dark/maximize.svg</file>
+        <file alias="icons/window/dark/restore.svg">../assets/icons/window/dark/restore.svg</file>
+        <file alias="icons/window/dark/close.svg">../assets/icons/window/dark/close.svg</file>
+        <file alias="icons/window/light/minimize.svg">../assets/icons/window/light/minimize.svg</file>
+        <file alias="icons/window/light/maximize.svg">../assets/icons/window/light/maximize.svg</file>
+        <file alias="icons/window/light/restore.svg">../assets/icons/window/light/restore.svg</file>
+        <file alias="icons/window/light/close.svg">../assets/icons/window/light/close.svg</file>
+    </qresource>
+</RCC>

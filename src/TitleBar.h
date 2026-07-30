@@ -62,6 +62,12 @@ private:
      */
     void toggleMaximized();
 
+    /*
+     * 更新最大化按钮状态属性。
+     * maximized 表示当前窗口是否处于最大化状态，用于刷新主题图标。
+     */
+    void updateMaximizeButtonState(bool maximized);
+
     QPoint m_dragPosition;
     QLabel *m_titleLabel = nullptr;
     QPushButton *m_themeButton = nullptr;

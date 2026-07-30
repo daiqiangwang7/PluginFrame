@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QMouseEvent>
 #include <QPushButton>
+#include <QStyle>
 
 TitleBar::TitleBar(QWidget *parent)
     : QWidget(parent)
@@ -64,14 +65,24 @@ void TitleBar::setupUi()
     m_themeButton = new QPushButton(QStringLiteral("皮肤"), this);
     m_themeButton->setObjectName(QStringLiteral("ThemeButton"));
 
-    m_minimizeButton = new QPushButton(QStringLiteral("-"), this);
-    m_minimizeButton->setObjectName(QStringLiteral("WindowButton"));
+    m_minimizeButton = new QPushButton(this);
+    m_minimizeButton->setObjectName(QStringLiteral("MinimizeButton"));
+    m_minimizeButton->setToolTip(QStringLiteral("最小化"));
 
-    m_maximizeButton = new QPushButton(QStringLiteral("□"), this);
-    m_maximizeButton->setObjectName(QStringLiteral("WindowButton"));
+    m_maximizeButton = new QPushButton(this);
+    m_maximizeButton->setObjectName(QStringLiteral("MaximizeButton"));
+    m_maximizeButton->setToolTip(QStringLiteral("最大化"));
+    updateMaximizeButtonState(false);
 
-    m_closeButton = new QPushButton(QStringLiteral("X"), this);
+    m_closeButton = new QPushButton(this);
     m_closeButton->setObjectName(QStringLiteral("CloseButton"));
+    m_closeButton->setToolTip(QStringLiteral("关闭"));
+
+    const QSize iconSize(16, 16);
+    m_themeButton->setIconSize(iconSize);
+    m_minimizeButton->setIconSize(iconSize);
+    m_maximizeButton->setIconSize(iconSize);
+    m_closeButton->setIconSize(iconSize);
 
     layout->addWidget(m_titleLabel);
     layout->addStretch();
@@ -102,9 +113,22 @@ void TitleBar::toggleMaximized()
 
     if (window()->isMaximized()) {
         window()->showNormal();
-        m_maximizeButton->setText(QStringLiteral("□"));
+        updateMaximizeButtonState(false);
     } else {
         window()->showMaximized();
-        m_maximizeButton->setText(QStringLiteral("▣"));
+        updateMaximizeButtonState(true);
     }
+}
+
+void TitleBar::updateMaximizeButtonState(bool maximized)
+{
+    if (!m_maximizeButton) {
+        return;
+    }
+
+    m_maximizeButton->setProperty("maximized", maximized);
+    m_maximizeButton->setToolTip(maximized ? QStringLiteral("还原") : QStringLiteral("最大化"));
+    m_maximizeButton->style()->unpolish(m_maximizeButton);
+    m_maximizeButton->style()->polish(m_maximizeButton);
+    m_maximizeButton->update();
 }

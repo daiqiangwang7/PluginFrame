@@ -3,8 +3,74 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QPushButton>
 #include <QStyle>
+
+namespace {
+
+enum class WindowControlIcon
+{
+    Minimize,
+    Maximize,
+    Close
+};
+
+class WindowControlButton : public QPushButton
+{
+public:
+    explicit WindowControlButton(WindowControlIcon icon, QWidget *parent = nullptr)
+        : QPushButton(parent)
+        , m_icon(icon)
+    {
+        setCursor(Qt::ArrowCursor);
+    }
+
+protected:
+    void paintEvent(QPaintEvent *event) override
+    {
+        QPushButton::paintEvent(event);
+
+        Q_UNUSED(event)
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+
+        QPen pen(palette().color(QPalette::ButtonText));
+        pen.setWidth(2);
+        pen.setCapStyle(Qt::SquareCap);
+        pen.setJoinStyle(Qt::MiterJoin);
+        painter.setPen(pen);
+        painter.setBrush(Qt::NoBrush);
+
+        const QRect iconRect = QRect(0, 0, 16, 16).translated(rect().center() - QPoint(8, 8));
+        if (m_icon == WindowControlIcon::Minimize) {
+            painter.drawLine(iconRect.left() + 2, iconRect.center().y() + 3,
+                             iconRect.right() - 2, iconRect.center().y() + 3);
+            return;
+        }
+
+        if (m_icon == WindowControlIcon::Close) {
+            painter.drawLine(iconRect.left() + 3, iconRect.top() + 3,
+                             iconRect.right() - 3, iconRect.bottom() - 3);
+            painter.drawLine(iconRect.right() - 3, iconRect.top() + 3,
+                             iconRect.left() + 3, iconRect.bottom() - 3);
+            return;
+        }
+
+        const bool maximized = property("maximized").toBool();
+        if (maximized) {
+            painter.drawRect(iconRect.adjusted(3, 5, -5, -3));
+            painter.drawRect(iconRect.adjusted(6, 2, -2, -6));
+        } else {
+            painter.drawRect(iconRect.adjusted(3, 3, -3, -3));
+        }
+    }
+
+private:
+    WindowControlIcon m_icon;
+};
+
+} // namespace
 
 TitleBar::TitleBar(QWidget *parent)
     : QWidget(parent)
@@ -65,16 +131,16 @@ void TitleBar::setupUi()
     m_themeButton = new QPushButton(QStringLiteral("皮肤"), this);
     m_themeButton->setObjectName(QStringLiteral("ThemeButton"));
 
-    m_minimizeButton = new QPushButton(this);
+    m_minimizeButton = new WindowControlButton(WindowControlIcon::Minimize, this);
     m_minimizeButton->setObjectName(QStringLiteral("MinimizeButton"));
     m_minimizeButton->setToolTip(QStringLiteral("最小化"));
 
-    m_maximizeButton = new QPushButton(this);
+    m_maximizeButton = new WindowControlButton(WindowControlIcon::Maximize, this);
     m_maximizeButton->setObjectName(QStringLiteral("MaximizeButton"));
     m_maximizeButton->setToolTip(QStringLiteral("最大化"));
     updateMaximizeButtonState(false);
 
-    m_closeButton = new QPushButton(this);
+    m_closeButton = new WindowControlButton(WindowControlIcon::Close, this);
     m_closeButton->setObjectName(QStringLiteral("CloseButton"));
     m_closeButton->setToolTip(QStringLiteral("关闭"));
 

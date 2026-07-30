@@ -2,6 +2,7 @@
 
 #include "CapabilityRegistry.h"
 #include "IPluginContext.h"
+#include "LogService.h"
 #include "MessageBus.h"
 #include "PluginSettings.h"
 
@@ -52,6 +53,10 @@ void TimeServicePlugin::start()
         return;
     }
 
+    if (m_context && m_context->logService()) {
+        m_context->logService()->info(name(), QStringLiteral("时间服务启动"));
+    }
+
     if (m_context && m_context->capabilityRegistry()) {
         m_context->capabilityRegistry()->registerCapability({
             QStringLiteral("com.pluginframe.time-service"),
@@ -68,6 +73,9 @@ void TimeServicePlugin::start()
 
 void TimeServicePlugin::stop()
 {
+    if (m_context && m_context->logService()) {
+        m_context->logService()->info(name(), QStringLiteral("时间服务停止"));
+    }
     if (m_timer) {
         m_timer->stop();
     }

@@ -49,6 +49,12 @@ public:
      */
     int windowCount(WindowArea area) const;
 
+    /*
+     * 激活指定窗口。
+     * id 为注册窗口时使用的唯一标识，找到并切换到该窗口时返回 true。
+     */
+    bool activateWindow(const QString &id);
+
 private:
     /*
      * 初始化窗口管理器界面。
@@ -75,6 +81,7 @@ private:
     QTabWidget *m_rightTabs = nullptr;
     QTabWidget *m_bottomTabs = nullptr;
     QMap<WindowArea, int> m_windowCounts;
+    QMap<QString, QPair<QTabWidget *, QWidget *>> m_registeredWindows;
     QList<QWidget *> m_floatingWindows;
 };
 

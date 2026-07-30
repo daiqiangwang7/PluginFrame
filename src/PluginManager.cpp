@@ -1,6 +1,7 @@
 #include "PluginManager.h"
 
 #include "CapabilityRegistry.h"
+#include "LogService.h"
 #include "MessageBus.h"
 #include "PluginContext.h"
 #include "PluginSettings.h"
@@ -67,8 +68,16 @@ void PluginManager::loadPlugins(const QString &path)
     }
 
     if (pluginSettings()) {
-        const QString settingsPath = QFileInfo(pluginsDir.absolutePath()).dir().absoluteFilePath(QStringLiteral("config/plugins"));
+        const QDir applicationDir = QFileInfo(pluginsDir.absolutePath()).dir();
+        const QString settingsPath = applicationDir.absoluteFilePath(QStringLiteral("config/plugins"));
         pluginSettings()->setBasePath(settingsPath);
+    }
+    if (logService()) {
+        const QDir applicationDir = QFileInfo(pluginsDir.absolutePath()).dir();
+        logService()->setLogFilePath(applicationDir.absoluteFilePath(QStringLiteral("logs/app.log")));
+        logService()->info(QStringLiteral("Host"),
+                           QStringLiteral("开始扫描插件目录"),
+                           {{QStringLiteral("path"), path}});
     }
 
     const QFileInfoList entries = pluginsDir.entryInfoList(QDir::Files, QDir::Name);
@@ -85,6 +94,12 @@ void PluginManager::loadPlugins(const QString &path)
         const PluginMetadata metadata = PluginMetadata::fromJsonObject(jsonMetadata, &metadataError);
         if (!metadata.isValid()) {
             qWarning() << "Invalid plugin metadata:" << filePath << metadataError;
+            if (logService()) {
+                logService()->error(QStringLiteral("PluginManager"),
+                                    QStringLiteral("插件元数据无效"),
+                                    {{QStringLiteral("path"), filePath},
+                                     {QStringLiteral("error"), metadataError}});
+            }
             PluginRecord record;
             record.loader = loader;
             record.filePath = filePath;
@@ -97,6 +112,11 @@ void PluginManager::loadPlugins(const QString &path)
 
         const bool enabledByConfig = m_enabledOverrides.value(metadata.id, true);
         if (!metadata.enabled || !enabledByConfig) {
+            if (logService()) {
+                logService()->warning(QStringLiteral("PluginManager"),
+                                      QStringLiteral("插件已禁用"),
+                                      {{QStringLiteral("pluginId"), metadata.id}});
+            }
             PluginRecord record;
             record.loader = loader;
             record.filePath = filePath;
@@ -133,6 +153,11 @@ CapabilityRegistry *PluginManager::capabilityRegistry() const
 PluginSettings *PluginManager::pluginSettings() const
 {
     return m_context ? m_context->pluginSettings() : nullptr;
+}
+
+LogService *PluginManager::logService() const
+{
+    return m_context ? m_context->logService() : nullptr;
 }
 
 void PluginManager::setPluginEnabled(const QString &pluginId, bool enabled)
@@ -267,6 +292,12 @@ bool PluginManager::startPlugin(int index)
         QObject *instance = loader->instance();
         if (!instance) {
             qWarning() << "Failed to load plugin:" << record.filePath << loader->errorString();
+            if (logService()) {
+                logService()->error(QStringLiteral("PluginManager"),
+                                    QStringLiteral("插件动态库加载失败"),
+                                    {{QStringLiteral("path"), record.filePath},
+                                     {QStringLiteral("error"), loader->errorString()}});
+            }
             record.errorString = loader->errorString();
             record.state = PluginState::Failed;
             loader->deleteLater();
@@ -276,6 +307,11 @@ bool PluginManager::startPlugin(int index)
         IPlugin *plugin = qobject_cast<IPlugin *>(instance);
         if (!plugin) {
             qWarning() << "Loaded library is not an IPlugin:" << record.filePath;
+            if (logService()) {
+                logService()->error(QStringLiteral("PluginManager"),
+                                    QStringLiteral("动态库不是有效插件"),
+                                    {{QStringLiteral("path"), record.filePath}});
+            }
             record.errorString = QStringLiteral("Loaded library is not an IPlugin");
             record.state = PluginState::Failed;
             loader->unload();
@@ -289,6 +325,11 @@ bool PluginManager::startPlugin(int index)
         plugin->setContext(m_context);
         if (!plugin->initialize()) {
             qWarning() << "Plugin initialization failed:" << plugin->name();
+            if (logService()) {
+                logService()->error(QStringLiteral("PluginManager"),
+                                    QStringLiteral("插件初始化失败"),
+                                    {{QStringLiteral("plugin"), plugin->name()}});
+            }
             record.errorString = QStringLiteral("Plugin initialization failed");
             record.state = PluginState::Failed;
             loader->unload();
@@ -299,6 +340,12 @@ bool PluginManager::startPlugin(int index)
         record.state = PluginState::Initialized;
         plugin->start();
         record.state = PluginState::Started;
+        if (logService()) {
+            logService()->info(QStringLiteral("PluginManager"),
+                               QStringLiteral("插件启动成功"),
+                               {{QStringLiteral("pluginId"), record.metadata.id},
+                                {QStringLiteral("name"), record.name}});
+        }
         return true;
 }
 
@@ -342,5 +389,11 @@ void PluginManager::failUnresolvedDependencies(const QSet<int> &pendingIndexes)
             record.loader->deleteLater();
         }
         qWarning() << "Plugin dependencies not satisfied:" << record.metadata.id << record.errorString;
+        if (logService()) {
+            logService()->error(QStringLiteral("PluginManager"),
+                                QStringLiteral("插件依赖未满足"),
+                                {{QStringLiteral("pluginId"), record.metadata.id},
+                                 {QStringLiteral("error"), record.errorString}});
+        }
     }
 }

@@ -4,6 +4,7 @@
 #include <QObject>
 
 class CapabilityRegistry;
+class LogService;
 class MessageBus;
 class PluginSettings;
 
@@ -36,6 +37,12 @@ public:
      * 返回值用于插件读取和保存自己的私有配置。
      */
     virtual PluginSettings *pluginSettings() const = 0;
+
+    /*
+     * 获取框架日志服务。
+     * 返回值用于插件写入统一日志并显示到宿主日志窗口。
+     */
+    virtual LogService *logService() const = 0;
 };
 
 #endif // IPLUGINCONTEXT_H

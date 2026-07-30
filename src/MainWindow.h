@@ -65,6 +65,12 @@ private:
      */
     void updateStatusBar();
 
+    /*
+     * 处理右侧抽屉页面请求。
+     * pageId 为抽屉导航项标识，用于切换内置窗口或写入操作日志。
+     */
+    void handleDrawerPageRequested(const QString &pageId);
+
     QWidget *m_shellRoot = nullptr;
     CyberSidebar *m_sidebar = nullptr;
     StatusBarWidget *m_statusBar = nullptr;

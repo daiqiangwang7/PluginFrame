@@ -4,6 +4,7 @@
 #include "IPluginContext.h"
 
 class CapabilityRegistry;
+class LogService;
 class MessageBus;
 class PluginSettings;
 
@@ -36,8 +37,15 @@ public:
      */
     PluginSettings *pluginSettings() const override;
 
+    /*
+     * 获取框架日志服务。
+     * 返回构造时创建的共享 LogService 指针。
+     */
+    LogService *logService() const override;
+
 private:
     CapabilityRegistry *m_capabilityRegistry = nullptr;
+    LogService *m_logService = nullptr;
     MessageBus *m_messageBus = nullptr;
     PluginSettings *m_pluginSettings = nullptr;
 };

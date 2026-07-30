@@ -12,6 +12,7 @@
 class MessageBus;
 class PluginContext;
 class CapabilityRegistry;
+class LogService;
 class QPluginLoader;
 class PluginSettings;
 
@@ -95,6 +96,12 @@ public:
      * 返回值可供宿主读取插件私有配置的保存位置。
      */
     PluginSettings *pluginSettings() const;
+
+    /*
+     * 获取框架日志服务。
+     * 返回值可供宿主写入日志或连接日志界面。
+     */
+    LogService *logService() const;
 
     /*
      * 获取当前插件记录快照。

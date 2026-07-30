@@ -9,6 +9,7 @@
 - 内部通信：`MessageBus` + `IPluginContext`
 - 能力注册中心：插件可注册视图、服务、命令、设置页等能力
 - 插件私有配置：插件可通过上下文读写自己的 ini 配置文件
+- 统一日志服务：宿主和插件可写入日志，日志页实时显示并落盘到 `logs/app.log`
 - 插件元数据：`id`、`name`、`displayName`、`version`、`type`、`enabled`
 - 插件依赖：通过 `dependencies` 声明依赖关系，宿主按依赖顺序启动插件
 - 主程序自动加载 `plugins` 目录下的动态库
@@ -112,6 +113,16 @@ const QString greeting = m_context->pluginSettings()
 
 - `HelloPlugin`：保存并读取 `ui/greeting`。
 - `TimeServicePlugin`：保存并读取 `timer/intervalMs`。
+
+## 日志服务
+
+插件可通过 `IPluginContext::logService()` 写入统一日志。日志支持 `Debug`、`Info`、`Warning`、`Error` 等等级，默认保存到：
+
+```text
+logs/app.log
+```
+
+右侧抽屉点击 `日志` 可打开内置运行日志窗口。
 
 ## 示例插件
 

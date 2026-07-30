@@ -3,6 +3,8 @@ add_library(plugin_host_lib
     AppConfig.h
     CyberSidebar.cpp
     CyberSidebar.h
+    LogViewerWidget.cpp
+    LogViewerWidget.h
     StatusBarWidget.cpp
     StatusBarWidget.h
     ThemeManager.cpp

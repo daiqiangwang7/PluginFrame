@@ -3,6 +3,8 @@
 #include "AppConfig.h"
 #include "CyberSidebar.h"
 #include "IViewPlugin.h"
+#include "LogService.h"
+#include "LogViewerWidget.h"
 #include "MessageBus.h"
 #include "PluginInspectorWidget.h"
 #include "PluginManager.h"
@@ -51,6 +53,7 @@ void MainWindow::setupUi()
 
     m_windowManager = new WindowManager(m_shellRoot);
     m_sidebar = new CyberSidebar(m_shellRoot);
+    connect(m_sidebar, &CyberSidebar::pageRequested, this, &MainWindow::handleDrawerPageRequested);
     m_statusBar = new StatusBarWidget(m_shellRoot);
 
     QWidget *workspace = new QWidget(m_shellRoot);
@@ -116,10 +119,20 @@ void MainWindow::loadPlugins()
                                      WindowArea::BottomDock,
                                      inspector});
 
+    LogViewerWidget *logViewer = new LogViewerWidget(m_pluginManager->logService(), this);
+    m_windowManager->registerWindow({QStringLiteral("host.logs"),
+                                     QStringLiteral("运行日志"),
+                                     WindowArea::BottomDock,
+                                     logViewer});
+
     if (m_pluginManager->messageBus()) {
         m_pluginManager->messageBus()->publish(
             QStringLiteral("app.status"),
             {{QStringLiteral("text"), QStringLiteral("宿主已通过消息总线加载插件")}});
+    }
+    if (m_pluginManager->logService()) {
+        m_pluginManager->logService()->info(QStringLiteral("Host"),
+                                            QStringLiteral("宿主已完成插件加载"));
     }
 
     updateStatusBar();
@@ -150,4 +163,27 @@ void MainWindow::updateStatusBar()
     }
 
     m_statusBar->updateStatus(m_themeManager->currentTheme(), m_pluginManager->pluginRecords());
+}
+
+void MainWindow::handleDrawerPageRequested(const QString &pageId)
+{
+    if (!m_windowManager || !m_pluginManager || !m_pluginManager->logService()) {
+        return;
+    }
+
+    if (pageId == QStringLiteral("logs")) {
+        m_windowManager->activateWindow(QStringLiteral("host.logs"));
+        m_pluginManager->logService()->info(QStringLiteral("Host"), QStringLiteral("打开运行日志窗口"));
+        return;
+    }
+
+    if (pageId == QStringLiteral("plugins")) {
+        m_windowManager->activateWindow(QStringLiteral("plugin.inspector"));
+        m_pluginManager->logService()->info(QStringLiteral("Host"), QStringLiteral("打开插件诊断窗口"));
+        return;
+    }
+
+    m_pluginManager->logService()->info(QStringLiteral("Host"),
+                                        QStringLiteral("右侧抽屉入口暂未绑定窗口"),
+                                        {{QStringLiteral("pageId"), pageId}});
 }

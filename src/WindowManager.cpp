@@ -27,12 +27,35 @@ void WindowManager::registerWindow(const WindowDescriptor &descriptor)
     }
 
     tabs->addTab(descriptor.widget, descriptor.title);
+    m_registeredWindows.insert(descriptor.id, qMakePair(tabs, descriptor.widget));
     m_windowCounts[descriptor.area] = m_windowCounts.value(descriptor.area) + 1;
 }
 
 int WindowManager::windowCount(WindowArea area) const
 {
     return m_windowCounts.value(area);
+}
+
+bool WindowManager::activateWindow(const QString &id)
+{
+    if (!m_registeredWindows.contains(id)) {
+        return false;
+    }
+
+    QTabWidget *tabs = m_registeredWindows.value(id).first;
+    QWidget *widget = m_registeredWindows.value(id).second;
+    if (!tabs || !widget) {
+        return false;
+    }
+
+    const int index = tabs->indexOf(widget);
+    if (index < 0) {
+        return false;
+    }
+
+    tabs->setCurrentIndex(index);
+    widget->setFocus();
+    return true;
 }
 
 void WindowManager::setupUi()

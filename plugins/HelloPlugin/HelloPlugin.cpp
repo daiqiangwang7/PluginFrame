@@ -2,6 +2,7 @@
 
 #include "CapabilityRegistry.h"
 #include "IPluginContext.h"
+#include "LogService.h"
 #include "MessageBus.h"
 #include "PluginSettings.h"
 
@@ -43,6 +44,9 @@ bool HelloPlugin::initialize()
 
     QPushButton *button = new QPushButton(QStringLiteral("发布 hello.clicked 消息"), m_widget);
     QObject::connect(button, &QPushButton::clicked, m_widget, [this]() {
+        if (m_context && m_context->logService()) {
+            m_context->logService()->info(name(), QStringLiteral("发布 hello.clicked 消息"));
+        }
         if (m_context && m_context->messageBus()) {
             m_context->messageBus()->publish(QStringLiteral("hello.clicked"),
                                              {{QStringLiteral("plugin"), name()}});
@@ -67,6 +71,10 @@ void HelloPlugin::start()
 {
     if (!m_context) {
         return;
+    }
+
+    if (m_context->logService()) {
+        m_context->logService()->info(name(), QStringLiteral("视图插件启动"));
     }
 
     if (m_context->capabilityRegistry()) {
@@ -106,6 +114,9 @@ void HelloPlugin::start()
 
 void HelloPlugin::stop()
 {
+    if (m_context && m_context->logService()) {
+        m_context->logService()->info(name(), QStringLiteral("视图插件停止"));
+    }
     delete m_widget;
     m_widget = nullptr;
     m_label = nullptr;

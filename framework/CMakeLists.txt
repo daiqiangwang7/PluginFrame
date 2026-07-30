@@ -1,6 +1,8 @@
 add_library(framework_moc STATIC
     CapabilityRegistry.cpp
     CapabilityRegistry.h
+    LogService.cpp
+    LogService.h
     PluginSettings.cpp
     PluginSettings.h
     IPlugin.h

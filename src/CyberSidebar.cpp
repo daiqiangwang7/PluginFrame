@@ -7,10 +7,11 @@
 
 namespace {
 
-const int kCollapsedWidth = 30;
+const int kCollapsedSize = 34;
 const int kExpandedWidth = 220;
 const int kTitleBarHeight = 42;
 const int kStatusBarHeight = 30;
+const int kCollapsedTopOffset = 18;
 
 } // namespace
 
@@ -35,11 +36,16 @@ void CyberSidebar::updateDrawerGeometry()
         return;
     }
 
-    const int drawerWidth = m_expanded ? kExpandedWidth : kCollapsedWidth;
+    const int drawerWidth = m_expanded ? kExpandedWidth : kCollapsedSize;
+    const int drawerHeight = m_expanded
+        ? parentWidget()->height() - kTitleBarHeight - kStatusBarHeight
+        : kCollapsedSize;
+    const int drawerTop = m_expanded ? kTitleBarHeight : kTitleBarHeight + kCollapsedTopOffset;
+
     setGeometry(parentWidget()->width() - drawerWidth,
-                kTitleBarHeight,
+                drawerTop,
                 drawerWidth,
-                parentWidget()->height() - kTitleBarHeight - kStatusBarHeight);
+                drawerHeight);
     show();
     raise();
 }
@@ -52,7 +58,7 @@ bool CyberSidebar::isExpanded() const
 void CyberSidebar::setupUi()
 {
     setObjectName(QStringLiteral("CyberDrawer"));
-    setMinimumWidth(kCollapsedWidth);
+    setMinimumWidth(kCollapsedSize);
     setMaximumWidth(kExpandedWidth);
 
     QHBoxLayout *rootLayout = new QHBoxLayout(this);
@@ -62,7 +68,7 @@ void CyberSidebar::setupUi()
     m_handleButton = new QPushButton(QStringLiteral("≡"), this);
     m_handleButton->setObjectName(QStringLiteral("DrawerHandleButton"));
     m_handleButton->setToolTip(QStringLiteral("展开功能抽屉"));
-    m_handleButton->setFixedWidth(kCollapsedWidth);
+    m_handleButton->setFixedWidth(kCollapsedSize);
     m_handleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     rootLayout->addWidget(m_handleButton);
 
@@ -105,7 +111,13 @@ void CyberSidebar::updateExpandedState()
         m_handleButton->setText(m_expanded ? QStringLiteral("×") : QStringLiteral("≡"));
         m_handleButton->setToolTip(m_expanded ? QStringLiteral("收起功能抽屉")
                                                : QStringLiteral("展开功能抽屉"));
+        if (m_expanded) {
+            m_handleButton->setMinimumSize(kCollapsedSize, 0);
+            m_handleButton->setMaximumSize(kCollapsedSize, QWIDGETSIZE_MAX);
+        } else {
+            m_handleButton->setFixedSize(kCollapsedSize, kCollapsedSize);
+        }
     }
 
-    setFixedWidth(m_expanded ? kExpandedWidth : kCollapsedWidth);
+    setFixedWidth(m_expanded ? kExpandedWidth : kCollapsedSize);
 }

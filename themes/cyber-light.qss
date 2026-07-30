@@ -12,6 +12,7 @@ QWidget#ShellRoot {
 
 QWidget#Workspace {
     background: #F7FCFD;
+    border-top: 1px solid #A7CBD4;
 }
 
 QWidget#CyberDrawer {
@@ -65,7 +66,7 @@ QLabel#StatusSummary {
 
 QWidget#TitleBar {
     background: #DDF4F8;
-    border-bottom: 1px solid #00A8CC;
+    border-bottom: 2px solid #00A8CC;
 }
 
 QLabel#WindowTitle {

@@ -11,7 +11,6 @@ const int kCollapsedSize = 34;
 const int kExpandedWidth = 220;
 const int kTitleBarHeight = 42;
 const int kStatusBarHeight = 30;
-const int kCollapsedTopOffset = 18;
 
 } // namespace
 
@@ -37,10 +36,11 @@ void CyberSidebar::updateDrawerGeometry()
     }
 
     const int drawerWidth = m_expanded ? kExpandedWidth : kCollapsedSize;
-    const int drawerHeight = m_expanded
-        ? parentWidget()->height() - kTitleBarHeight - kStatusBarHeight
-        : kCollapsedSize;
-    const int drawerTop = m_expanded ? kTitleBarHeight : kTitleBarHeight + kCollapsedTopOffset;
+    const int availableHeight = parentWidget()->height() - kTitleBarHeight - kStatusBarHeight;
+    const int drawerHeight = m_expanded ? availableHeight : kCollapsedSize;
+    const int drawerTop = m_expanded
+        ? kTitleBarHeight
+        : kTitleBarHeight + qMax(0, (availableHeight - kCollapsedSize) / 2);
 
     setGeometry(parentWidget()->width() - drawerWidth,
                 drawerTop,

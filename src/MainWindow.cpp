@@ -12,6 +12,7 @@
 #include "WindowManager.h"
 
 #include <QApplication>
+#include <QFrame>
 #include <QHBoxLayout>
 #include <QResizeEvent>
 #include <QVBoxLayout>
@@ -43,6 +44,11 @@ void MainWindow::setupUi()
     m_titleBar->setThemeName(m_themeManager->currentTheme());
     connect(m_titleBar, &TitleBar::themeToggleRequested, this, &MainWindow::toggleTheme);
 
+    QFrame *titleSeparator = new QFrame(m_shellRoot);
+    titleSeparator->setObjectName(QStringLiteral("TitleSeparator"));
+    titleSeparator->setFixedHeight(2);
+    titleSeparator->setFrameShape(QFrame::NoFrame);
+
     m_windowManager = new WindowManager(m_shellRoot);
     m_sidebar = new CyberSidebar(m_shellRoot);
     m_statusBar = new StatusBarWidget(m_shellRoot);
@@ -55,6 +61,7 @@ void MainWindow::setupUi()
     workspaceLayout->addWidget(m_windowManager, 1);
 
     rootLayout->addWidget(m_titleBar);
+    rootLayout->addWidget(titleSeparator);
     rootLayout->addWidget(workspace, 1);
     rootLayout->addWidget(m_statusBar);
 

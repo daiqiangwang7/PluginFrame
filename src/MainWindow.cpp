@@ -13,6 +13,7 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QResizeEvent>
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -39,6 +40,7 @@ void MainWindow::setupUi()
 
     m_titleBar = new TitleBar(m_shellRoot);
     m_titleBar->setTitle(QStringLiteral("插件框架"));
+    connect(m_titleBar, &TitleBar::drawerToggleRequested, this, &MainWindow::toggleFunctionDrawer);
     connect(m_titleBar, &TitleBar::themeToggleRequested, this, &MainWindow::toggleTheme);
 
     m_windowManager = new WindowManager(m_shellRoot);
@@ -50,7 +52,6 @@ void MainWindow::setupUi()
     QHBoxLayout *workspaceLayout = new QHBoxLayout(workspace);
     workspaceLayout->setContentsMargins(0, 0, 0, 0);
     workspaceLayout->setSpacing(0);
-    workspaceLayout->addWidget(m_sidebar);
     workspaceLayout->addWidget(m_windowManager, 1);
 
     rootLayout->addWidget(m_titleBar);
@@ -60,6 +61,15 @@ void MainWindow::setupUi()
     setCentralWidget(m_shellRoot);
     setWindowTitle(QStringLiteral("插件框架"));
     resize(1100, 700);
+    m_sidebar->updateDrawerGeometry();
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    if (m_sidebar) {
+        m_sidebar->updateDrawerGeometry();
+    }
 }
 
 void MainWindow::loadPlugins()
@@ -130,4 +140,11 @@ void MainWindow::updateStatusBar()
     }
 
     m_statusBar->updateStatus(m_themeManager->currentTheme(), m_pluginManager->pluginRecords());
+}
+
+void MainWindow::toggleFunctionDrawer()
+{
+    if (m_sidebar) {
+        m_sidebar->toggleDrawer();
+    }
 }

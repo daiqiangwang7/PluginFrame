@@ -28,6 +28,13 @@ public:
      */
     ~MainWindow() override = default;
 
+protected:
+    /*
+     * 处理窗口尺寸变化事件。
+     * 用于同步右侧功能抽屉的位置和高度。
+     */
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
     /*
      * 初始化主窗口界面。
@@ -57,6 +64,12 @@ private:
      * 使用当前主题和插件记录更新工作台状态摘要。
      */
     void updateStatusBar();
+
+    /*
+     * 切换右侧功能抽屉。
+     * 当前隐藏时弹出，当前显示时收起。
+     */
+    void toggleFunctionDrawer();
 
     QWidget *m_shellRoot = nullptr;
     CyberSidebar *m_sidebar = nullptr;

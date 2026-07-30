@@ -7,12 +7,33 @@ CyberSidebar::CyberSidebar(QWidget *parent)
     : QWidget(parent)
 {
     setupUi();
+    hide();
+}
+
+void CyberSidebar::toggleDrawer()
+{
+    updateDrawerGeometry();
+    setVisible(!isVisible());
+    raise();
+}
+
+void CyberSidebar::updateDrawerGeometry()
+{
+    if (!parentWidget()) {
+        return;
+    }
+
+    const int drawerWidth = width();
+    setGeometry(parentWidget()->width() - drawerWidth,
+                42,
+                drawerWidth,
+                parentWidget()->height() - 72);
 }
 
 void CyberSidebar::setupUi()
 {
-    setObjectName(QStringLiteral("CyberSidebar"));
-    setFixedWidth(128);
+    setObjectName(QStringLiteral("CyberDrawer"));
+    setFixedWidth(220);
 
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(10, 14, 10, 14);

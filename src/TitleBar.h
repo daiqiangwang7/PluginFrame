@@ -25,6 +25,12 @@ public:
 
 signals:
     /*
+     * 请求切换功能抽屉。
+     * 用户点击功能按钮时发出该信号。
+     */
+    void drawerToggleRequested();
+
+    /*
      * 请求切换应用主题。
      * 用户点击主题按钮时发出该信号。
      */
@@ -70,6 +76,7 @@ private:
 
     QPoint m_dragPosition;
     QLabel *m_titleLabel = nullptr;
+    QPushButton *m_drawerButton = nullptr;
     QPushButton *m_themeButton = nullptr;
     QPushButton *m_minimizeButton = nullptr;
     QPushButton *m_maximizeButton = nullptr;

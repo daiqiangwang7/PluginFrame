@@ -14,9 +14,10 @@ QWidget#Workspace {
     background: #060B12;
 }
 
-QWidget#CyberSidebar {
+QWidget#CyberDrawer {
     background: #07111D;
-    border-right: 1px solid #15384A;
+    border-left: 1px solid #00E5FF;
+    border-bottom: 1px solid #15384A;
 }
 
 QPushButton#SidebarButton {

@@ -11,10 +11,22 @@ class CyberSidebar : public QWidget
 
 public:
     /*
-     * 创建赛博朋克侧边栏。
+     * 创建赛博朋克功能抽屉。
      * parent 为 Qt 对象父节点，用于纳入 Qt 对象生命周期管理。
      */
     explicit CyberSidebar(QWidget *parent = nullptr);
+
+    /*
+     * 切换抽屉显示状态。
+     * 当前隐藏时显示，当前显示时隐藏。
+     */
+    void toggleDrawer();
+
+    /*
+     * 更新抽屉几何位置。
+     * 根据父窗口尺寸将抽屉停靠到右侧。
+     */
+    void updateDrawerGeometry();
 
 signals:
     /*
@@ -25,7 +37,7 @@ signals:
 
 private:
     /*
-     * 初始化侧边栏界面。
+     * 初始化抽屉界面。
      * 创建固定导航入口和底部占位空间。
      */
     void setupUi();

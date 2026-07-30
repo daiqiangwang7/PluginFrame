@@ -128,6 +128,9 @@ void TitleBar::setupUi()
     m_titleLabel = new QLabel(QStringLiteral("插件框架"), this);
     m_titleLabel->setObjectName(QStringLiteral("WindowTitle"));
 
+    m_drawerButton = new QPushButton(QStringLiteral("功能"), this);
+    m_drawerButton->setObjectName(QStringLiteral("DrawerButton"));
+
     m_themeButton = new QPushButton(QStringLiteral("皮肤"), this);
     m_themeButton->setObjectName(QStringLiteral("ThemeButton"));
 
@@ -152,11 +155,13 @@ void TitleBar::setupUi()
 
     layout->addWidget(m_titleLabel);
     layout->addStretch();
+    layout->addWidget(m_drawerButton);
     layout->addWidget(m_themeButton);
     layout->addWidget(m_minimizeButton);
     layout->addWidget(m_maximizeButton);
     layout->addWidget(m_closeButton);
 
+    connect(m_drawerButton, &QPushButton::clicked, this, &TitleBar::drawerToggleRequested);
     connect(m_themeButton, &QPushButton::clicked, this, &TitleBar::themeToggleRequested);
     connect(m_minimizeButton, &QPushButton::clicked, this, [this]() {
         if (window()) {

@@ -3,6 +3,7 @@
 #include "CapabilityRegistry.h"
 #include "MessageBus.h"
 #include "PluginContext.h"
+#include "PluginSettings.h"
 
 #include <QDebug>
 #include <QDir>
@@ -65,6 +66,11 @@ void PluginManager::loadPlugins(const QString &path)
         return;
     }
 
+    if (pluginSettings()) {
+        const QString settingsPath = QFileInfo(pluginsDir.absolutePath()).dir().absoluteFilePath(QStringLiteral("config/plugins"));
+        pluginSettings()->setBasePath(settingsPath);
+    }
+
     const QFileInfoList entries = pluginsDir.entryInfoList(QDir::Files, QDir::Name);
     for (const QFileInfo &entry : entries) {
         const QString filePath = entry.absoluteFilePath();
@@ -122,6 +128,11 @@ MessageBus *PluginManager::messageBus() const
 CapabilityRegistry *PluginManager::capabilityRegistry() const
 {
     return m_context ? m_context->capabilityRegistry() : nullptr;
+}
+
+PluginSettings *PluginManager::pluginSettings() const
+{
+    return m_context ? m_context->pluginSettings() : nullptr;
 }
 
 void PluginManager::setPluginEnabled(const QString &pluginId, bool enabled)

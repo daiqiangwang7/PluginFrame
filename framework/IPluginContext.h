@@ -5,6 +5,7 @@
 
 class CapabilityRegistry;
 class MessageBus;
+class PluginSettings;
 
 class IPluginContext : public QObject
 {
@@ -29,6 +30,12 @@ public:
      * 返回值用于插件向宿主注册窗口、命令、服务和设置页等能力。
      */
     virtual CapabilityRegistry *capabilityRegistry() const = 0;
+
+    /*
+     * 获取插件配置服务。
+     * 返回值用于插件读取和保存自己的私有配置。
+     */
+    virtual PluginSettings *pluginSettings() const = 0;
 };
 
 #endif // IPLUGINCONTEXT_H

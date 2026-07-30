@@ -5,6 +5,7 @@
 
 class CapabilityRegistry;
 class MessageBus;
+class PluginSettings;
 
 class PluginContext : public IPluginContext
 {
@@ -29,9 +30,16 @@ public:
      */
     CapabilityRegistry *capabilityRegistry() const override;
 
+    /*
+     * 获取插件配置服务。
+     * 返回构造时创建的共享 PluginSettings 指针。
+     */
+    PluginSettings *pluginSettings() const override;
+
 private:
     CapabilityRegistry *m_capabilityRegistry = nullptr;
     MessageBus *m_messageBus = nullptr;
+    PluginSettings *m_pluginSettings = nullptr;
 };
 
 #endif // PLUGINCONTEXT_H

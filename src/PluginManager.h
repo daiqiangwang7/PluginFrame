@@ -13,6 +13,7 @@ class MessageBus;
 class PluginContext;
 class CapabilityRegistry;
 class QPluginLoader;
+class PluginSettings;
 
 /*
  * 表示插件当前生命周期状态。
@@ -88,6 +89,12 @@ public:
      * 返回值可供宿主界面读取插件注册的窗口、命令、服务等能力。
      */
     CapabilityRegistry *capabilityRegistry() const;
+
+    /*
+     * 获取插件配置服务。
+     * 返回值可供宿主读取插件私有配置的保存位置。
+     */
+    PluginSettings *pluginSettings() const;
 
     /*
      * 获取当前插件记录快照。

@@ -3,6 +3,7 @@
 #include "CapabilityRegistry.h"
 #include "IPluginContext.h"
 #include "MessageBus.h"
+#include "PluginSettings.h"
 
 #include <QPushButton>
 #include <QLabel>
@@ -26,7 +27,16 @@ bool HelloPlugin::initialize()
 
     m_widget = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout(m_widget);
-    m_label = new QLabel(QStringLiteral("你好，来自视图插件！"), m_widget);
+    QString greeting = QStringLiteral("你好，来自视图插件！");
+    if (m_context && m_context->pluginSettings()) {
+        const QString pluginId = QStringLiteral("com.pluginframe.hello");
+        if (!m_context->pluginSettings()->contains(pluginId, QStringLiteral("ui/greeting"))) {
+            m_context->pluginSettings()->setValue(pluginId, QStringLiteral("ui/greeting"), greeting);
+        }
+        greeting = m_context->pluginSettings()->value(pluginId, QStringLiteral("ui/greeting"), greeting).toString();
+    }
+
+    m_label = new QLabel(greeting, m_widget);
     m_label->setAlignment(Qt::AlignCenter);
     m_timeLabel = new QLabel(QStringLiteral("等待时间服务..."), m_widget);
     m_timeLabel->setAlignment(Qt::AlignCenter);

@@ -8,6 +8,7 @@
 - 插件生命周期管理：`Loaded`、`Initialized`、`Started`、`Stopped`、`Disabled`、`Failed`
 - 内部通信：`MessageBus` + `IPluginContext`
 - 能力注册中心：插件可注册视图、服务、命令、设置页等能力
+- 插件私有配置：插件可通过上下文读写自己的 ini 配置文件
 - 插件元数据：`id`、`name`、`displayName`、`version`、`type`、`enabled`
 - 插件依赖：通过 `dependencies` 声明依赖关系，宿主按依赖顺序启动插件
 - 主程序自动加载 `plugins` 目录下的动态库
@@ -88,6 +89,29 @@ m_context->capabilityRegistry()->registerCapability({
     QStringLiteral("HelloPlugin")
 });
 ```
+
+## 插件配置
+
+插件可通过 `IPluginContext::pluginSettings()` 读写私有配置。宿主默认将配置保存到：
+
+```text
+config/plugins/<pluginId>.ini
+```
+
+示例：
+
+```cpp
+const QString pluginId = QStringLiteral("com.pluginframe.hello");
+m_context->pluginSettings()->setValue(pluginId, QStringLiteral("ui/greeting"),
+                                      QStringLiteral("你好，来自视图插件！"));
+const QString greeting = m_context->pluginSettings()
+        ->value(pluginId, QStringLiteral("ui/greeting")).toString();
+```
+
+当前示例插件使用了配置服务：
+
+- `HelloPlugin`：保存并读取 `ui/greeting`。
+- `TimeServicePlugin`：保存并读取 `timer/intervalMs`。
 
 ## 示例插件
 

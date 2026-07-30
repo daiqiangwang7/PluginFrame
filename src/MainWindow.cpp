@@ -40,7 +40,7 @@ void MainWindow::setupUi()
 
     m_titleBar = new TitleBar(m_shellRoot);
     m_titleBar->setTitle(QStringLiteral("插件框架"));
-    connect(m_titleBar, &TitleBar::drawerToggleRequested, this, &MainWindow::toggleFunctionDrawer);
+    m_titleBar->setThemeName(m_themeManager->currentTheme());
     connect(m_titleBar, &TitleBar::themeToggleRequested, this, &MainWindow::toggleTheme);
 
     m_windowManager = new WindowManager(m_shellRoot);
@@ -122,6 +122,9 @@ void MainWindow::toggleTheme()
 {
     if (m_themeManager) {
         m_themeManager->toggleTheme(qApp);
+        if (m_titleBar) {
+            m_titleBar->setThemeName(m_themeManager->currentTheme());
+        }
         updateStatusBar();
     }
 }
@@ -140,11 +143,4 @@ void MainWindow::updateStatusBar()
     }
 
     m_statusBar->updateStatus(m_themeManager->currentTheme(), m_pluginManager->pluginRecords());
-}
-
-void MainWindow::toggleFunctionDrawer()
-{
-    if (m_sidebar) {
-        m_sidebar->toggleDrawer();
-    }
 }

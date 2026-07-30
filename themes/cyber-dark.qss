@@ -20,6 +20,26 @@ QWidget#CyberDrawer {
     border-bottom: 1px solid #15384A;
 }
 
+QWidget#DrawerContent {
+    background: #07111D;
+}
+
+QPushButton#DrawerHandleButton {
+    background: #0B1724;
+    border: 1px solid #15384A;
+    border-right: none;
+    color: #00E5FF;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 0;
+}
+
+QPushButton#DrawerHandleButton:hover {
+    background: #102B3D;
+    border-color: #00E5FF;
+    color: #D7F9FF;
+}
+
 QPushButton#SidebarButton {
     background: #0B1724;
     border: 1px solid #15384A;
@@ -63,6 +83,11 @@ QPushButton#ThemeButton {
     color: #D7F9FF;
     min-width: 38px;
     min-height: 28px;
+}
+
+QPushButton#ThemeButton {
+    min-width: 34px;
+    max-width: 34px;
 }
 
 QPushButton#MinimizeButton:hover,

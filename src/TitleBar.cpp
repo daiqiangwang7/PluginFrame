@@ -1,6 +1,7 @@
 #include "TitleBar.h"
 
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QPainter>
@@ -83,6 +84,20 @@ void TitleBar::setTitle(const QString &title)
     m_titleLabel->setText(title);
 }
 
+void TitleBar::setThemeName(const QString &themeName)
+{
+    if (!m_themeButton) {
+        return;
+    }
+
+    const QString iconPath = themeName == QStringLiteral("cyber-light")
+        ? QStringLiteral(":/icons/theme/light/skin.png")
+        : QStringLiteral(":/icons/theme/dark/skin.png");
+    m_themeButton->setIcon(QIcon(iconPath));
+    m_themeButton->update();
+    emit themeIconChanged();
+}
+
 void TitleBar::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && window()) {
@@ -128,11 +143,9 @@ void TitleBar::setupUi()
     m_titleLabel = new QLabel(QStringLiteral("插件框架"), this);
     m_titleLabel->setObjectName(QStringLiteral("WindowTitle"));
 
-    m_drawerButton = new QPushButton(QStringLiteral("功能"), this);
-    m_drawerButton->setObjectName(QStringLiteral("DrawerButton"));
-
-    m_themeButton = new QPushButton(QStringLiteral("皮肤"), this);
+    m_themeButton = new QPushButton(this);
     m_themeButton->setObjectName(QStringLiteral("ThemeButton"));
+    m_themeButton->setToolTip(QStringLiteral("切换皮肤"));
 
     m_minimizeButton = new WindowControlButton(WindowControlIcon::Minimize, this);
     m_minimizeButton->setObjectName(QStringLiteral("MinimizeButton"));
@@ -147,21 +160,20 @@ void TitleBar::setupUi()
     m_closeButton->setObjectName(QStringLiteral("CloseButton"));
     m_closeButton->setToolTip(QStringLiteral("关闭"));
 
-    const QSize iconSize(16, 16);
+    const QSize iconSize(18, 18);
     m_themeButton->setIconSize(iconSize);
     m_minimizeButton->setIconSize(iconSize);
     m_maximizeButton->setIconSize(iconSize);
     m_closeButton->setIconSize(iconSize);
+    setThemeName(QStringLiteral("cyber-dark"));
 
     layout->addWidget(m_titleLabel);
     layout->addStretch();
-    layout->addWidget(m_drawerButton);
     layout->addWidget(m_themeButton);
     layout->addWidget(m_minimizeButton);
     layout->addWidget(m_maximizeButton);
     layout->addWidget(m_closeButton);
 
-    connect(m_drawerButton, &QPushButton::clicked, this, &TitleBar::drawerToggleRequested);
     connect(m_themeButton, &QPushButton::clicked, this, &TitleBar::themeToggleRequested);
     connect(m_minimizeButton, &QPushButton::clicked, this, [this]() {
         if (window()) {

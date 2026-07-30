@@ -23,18 +23,24 @@ public:
      */
     void setTitle(const QString &title);
 
-signals:
     /*
-     * 请求切换功能抽屉。
-     * 用户点击功能按钮时发出该信号。
+     * 设置标题栏当前主题名称。
+     * themeName 用于选择皮肤按钮在深色或浅色主题下显示的图标。
      */
-    void drawerToggleRequested();
+    void setThemeName(const QString &themeName);
 
+signals:
     /*
      * 请求切换应用主题。
      * 用户点击主题按钮时发出该信号。
      */
     void themeToggleRequested();
+
+    /*
+     * 标题栏图标资源刷新完成。
+     * 当主题变化导致皮肤按钮图标重设后发出，便于后续扩展联动。
+     */
+    void themeIconChanged();
 
 protected:
     /*
@@ -76,7 +82,6 @@ private:
 
     QPoint m_dragPosition;
     QLabel *m_titleLabel = nullptr;
-    QPushButton *m_drawerButton = nullptr;
     QPushButton *m_themeButton = nullptr;
     QPushButton *m_minimizeButton = nullptr;
     QPushButton *m_maximizeButton = nullptr;

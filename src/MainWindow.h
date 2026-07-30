@@ -65,12 +65,6 @@ private:
      */
     void updateStatusBar();
 
-    /*
-     * 切换右侧功能抽屉。
-     * 当前隐藏时弹出，当前显示时收起。
-     */
-    void toggleFunctionDrawer();
-
     QWidget *m_shellRoot = nullptr;
     CyberSidebar *m_sidebar = nullptr;
     StatusBarWidget *m_statusBar = nullptr;

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+class QPushButton;
 class QVBoxLayout;
 
 class CyberSidebar : public QWidget
@@ -18,7 +19,7 @@ public:
 
     /*
      * 切换抽屉显示状态。
-     * 当前隐藏时显示，当前显示时隐藏。
+     * 当前收起时展开导航列表，当前展开时收起为右侧贴边把手。
      */
     void toggleDrawer();
 
@@ -27,6 +28,12 @@ public:
      * 根据父窗口尺寸将抽屉停靠到右侧。
      */
     void updateDrawerGeometry();
+
+    /*
+     * 返回抽屉是否处于展开状态。
+     * 用于外部判断当前导航列表是否完整显示。
+     */
+    bool isExpanded() const;
 
 signals:
     /*
@@ -38,7 +45,7 @@ signals:
 private:
     /*
      * 初始化抽屉界面。
-     * 创建固定导航入口和底部占位空间。
+     * 创建右侧贴边把手、导航入口和底部占位空间。
      */
     void setupUi();
 
@@ -48,7 +55,16 @@ private:
      */
     void addNavigationButton(const QString &text, const QString &pageId);
 
-    QVBoxLayout *m_layout = nullptr;
+    /*
+     * 刷新抽屉内容区可见状态。
+     * 展开时显示导航列表，收起时仅保留贴边把手。
+     */
+    void updateExpandedState();
+
+    QWidget *m_contentWidget = nullptr;
+    QPushButton *m_handleButton = nullptr;
+    QVBoxLayout *m_contentLayout = nullptr;
+    bool m_expanded = false;
 };
 
 #endif // CYBERSIDEBAR_H

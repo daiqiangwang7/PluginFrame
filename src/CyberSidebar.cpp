@@ -40,6 +40,8 @@ void CyberSidebar::updateDrawerGeometry()
                 kTitleBarHeight,
                 drawerWidth,
                 parentWidget()->height() - kTitleBarHeight - kStatusBarHeight);
+    show();
+    raise();
 }
 
 bool CyberSidebar::isExpanded() const

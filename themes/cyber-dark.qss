@@ -106,7 +106,7 @@ QPushButton#MaximizeButton {
     qproperty-icon: url(:/icons/window/dark/maximize.svg);
 }
 
-QPushButton#MaximizeButton[maximized="true"] {
+QPushButton#MaximizeButton[windowMaximized="true"] {
     qproperty-icon: url(:/icons/window/dark/restore.svg);
 }
 

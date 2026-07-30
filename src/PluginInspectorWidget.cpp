@@ -35,11 +35,12 @@ void PluginInspectorWidget::setupUi()
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_table = new QTableWidget(this);
-    m_table->setColumnCount(6);
+    m_table->setColumnCount(7);
     m_table->setHorizontalHeaderLabels({
         QStringLiteral("名称"),
         QStringLiteral("类型"),
         QStringLiteral("版本"),
+        QStringLiteral("依赖"),
         QStringLiteral("状态"),
         QStringLiteral("路径"),
         QStringLiteral("错误")
@@ -56,7 +57,8 @@ void PluginInspectorWidget::fillRecordRow(int row, const PluginRecord &record)
     m_table->setItem(row, 0, createReadOnlyItem(record.name));
     m_table->setItem(row, 1, createReadOnlyItem(record.metadata.type));
     m_table->setItem(row, 2, createReadOnlyItem(record.metadata.version));
-    m_table->setItem(row, 3, createReadOnlyItem(pluginStateToString(record.state)));
-    m_table->setItem(row, 4, createReadOnlyItem(record.filePath));
-    m_table->setItem(row, 5, createReadOnlyItem(record.errorString));
+    m_table->setItem(row, 3, createReadOnlyItem(record.metadata.dependencies.join(QStringLiteral(", "))));
+    m_table->setItem(row, 4, createReadOnlyItem(pluginStateToString(record.state)));
+    m_table->setItem(row, 5, createReadOnlyItem(record.filePath));
+    m_table->setItem(row, 6, createReadOnlyItem(record.errorString));
 }

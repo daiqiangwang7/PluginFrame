@@ -4,5 +4,8 @@
   "displayName": "你好插件",
   "version": "1.0.0",
   "type": "view",
+  "dependencies": [
+    "com.pluginframe.time-service"
+  ],
   "enabled": true
 }

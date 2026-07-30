@@ -3,6 +3,7 @@
 
 #include <QJsonObject>
 #include <QString>
+#include <QStringList>
 
 struct PluginMetadata
 {
@@ -11,6 +12,7 @@ struct PluginMetadata
     QString displayName;
     QString version;
     QString type;
+    QStringList dependencies;
     bool enabled = true;
 
     /*

@@ -7,9 +7,11 @@
 #include <QList>
 #include <QHash>
 #include <QObject>
+#include <QSet>
 
 class MessageBus;
 class PluginContext;
+class CapabilityRegistry;
 class QPluginLoader;
 
 /*
@@ -82,6 +84,12 @@ public:
     MessageBus *messageBus() const;
 
     /*
+     * 获取插件能力注册中心。
+     * 返回值可供宿主界面读取插件注册的窗口、命令、服务等能力。
+     */
+    CapabilityRegistry *capabilityRegistry() const;
+
+    /*
      * 获取当前插件记录快照。
      * 返回值包含插件文件路径、名称、状态和加载错误信息。
      */
@@ -119,6 +127,30 @@ private:
      * record 为需要停止的插件记录，只有 Started 状态会触发 stop()。
      */
     void stopPlugin(PluginRecord &record);
+
+    /*
+     * 启动所有已扫描且可用的插件。
+     * 按元数据依赖关系和服务优先规则决定初始化顺序。
+     */
+    void startScannedPlugins();
+
+    /*
+     * 启动指定插件记录。
+     * index 为 m_records 中的插件索引，启动成功时返回 true。
+     */
+    bool startPlugin(int index);
+
+    /*
+     * 判断插件依赖是否已满足。
+     * record 为待启动插件，startedPluginIds 为已经启动的插件 id 集合。
+     */
+    bool dependenciesSatisfied(const PluginRecord &record, const QSet<QString> &startedPluginIds) const;
+
+    /*
+     * 标记当前无法满足依赖的插件为失败。
+     * pendingIndexes 为尚未启动的插件索引集合。
+     */
+    void failUnresolvedDependencies(const QSet<int> &pendingIndexes);
 
     MessageBus *m_messageBus = nullptr;
     PluginContext *m_context = nullptr;

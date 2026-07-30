@@ -1,5 +1,6 @@
 #include "TimeServicePlugin.h"
 
+#include "CapabilityRegistry.h"
 #include "IPluginContext.h"
 #include "MessageBus.h"
 
@@ -38,6 +39,16 @@ void TimeServicePlugin::start()
 {
     if (!m_timer) {
         return;
+    }
+
+    if (m_context && m_context->capabilityRegistry()) {
+        m_context->capabilityRegistry()->registerCapability({
+            QStringLiteral("com.pluginframe.time-service"),
+            QStringLiteral("time.tick.service"),
+            QStringLiteral("service"),
+            QStringLiteral("时间发布服务"),
+            QStringLiteral("time.tick")
+        });
     }
 
     publishTick();

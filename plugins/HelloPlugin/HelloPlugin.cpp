@@ -1,5 +1,6 @@
 #include "HelloPlugin.h"
 
+#include "CapabilityRegistry.h"
 #include "IPluginContext.h"
 #include "MessageBus.h"
 
@@ -54,7 +55,21 @@ void HelloPlugin::setContext(IPluginContext *context)
 
 void HelloPlugin::start()
 {
-    if (!m_context || !m_context->messageBus()) {
+    if (!m_context) {
+        return;
+    }
+
+    if (m_context->capabilityRegistry()) {
+        m_context->capabilityRegistry()->registerCapability({
+            QStringLiteral("com.pluginframe.hello"),
+            QStringLiteral("hello.view"),
+            QStringLiteral("view"),
+            QStringLiteral("你好插件视图"),
+            QStringLiteral("HelloPlugin")
+        });
+    }
+
+    if (!m_context->messageBus()) {
         return;
     }
 

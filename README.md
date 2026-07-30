@@ -7,7 +7,9 @@
 - `framework` 接口层：`IPlugin`、`IViewPlugin`、`IServicePlugin`
 - 插件生命周期管理：`Loaded`、`Initialized`、`Started`、`Stopped`、`Disabled`、`Failed`
 - 内部通信：`MessageBus` + `IPluginContext`
+- 能力注册中心：插件可注册视图、服务、命令、设置页等能力
 - 插件元数据：`id`、`name`、`displayName`、`version`、`type`、`enabled`
+- 插件依赖：通过 `dependencies` 声明依赖关系，宿主按依赖顺序启动插件
 - 主程序自动加载 `plugins` 目录下的动态库
 - 内置插件诊断页：展示插件名称、类型、版本、状态、路径和错误信息
 - 多区域窗口管理：中心区、左侧区、右侧区、底部区和浮动窗口
@@ -49,6 +51,9 @@ build/bin/Debug/plugins/
   "displayName": "Hello Plugin",
   "version": "1.0.0",
   "type": "view",
+  "dependencies": [
+    "com.pluginframe.time-service"
+  ],
   "enabled": true
 }
 ```
@@ -60,7 +65,29 @@ build/bin/Debug/plugins/
 - `displayName`：插件显示名称。
 - `version`：插件版本。
 - `type`：插件类型，目前支持 `view` 和 `service`。
+- `dependencies`：依赖插件 id 数组，宿主会先启动依赖插件。
 - `enabled`：是否启用插件，`false` 时主程序会跳过加载。
+
+## 能力注册
+
+插件可通过 `IPluginContext::capabilityRegistry()` 注册能力。能力用于描述插件向宿主提供的扩展点，例如：
+
+- `view`：视图窗口。
+- `service`：后台服务能力。
+- `command`：命令或操作入口。
+- `settings`：插件设置页。
+
+示例：
+
+```cpp
+m_context->capabilityRegistry()->registerCapability({
+    QStringLiteral("com.pluginframe.hello"),
+    QStringLiteral("hello.view"),
+    QStringLiteral("view"),
+    QStringLiteral("你好插件视图"),
+    QStringLiteral("HelloPlugin")
+});
+```
 
 ## 示例插件
 

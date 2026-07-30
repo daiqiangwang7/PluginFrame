@@ -1,4 +1,6 @@
 add_library(framework_moc STATIC
+    CapabilityRegistry.cpp
+    CapabilityRegistry.h
     IPlugin.h
     IPluginContext.h
     IViewPlugin.h

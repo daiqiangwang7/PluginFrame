@@ -1,5 +1,6 @@
 #include "PluginManager.h"
 
+#include "CapabilityRegistry.h"
 #include "MessageBus.h"
 #include "PluginContext.h"
 
@@ -9,6 +10,18 @@
 #include <QJsonObject>
 #include <QLibrary>
 #include <QPluginLoader>
+#include <QSet>
+
+#include <algorithm>
+
+namespace {
+
+int pluginTypePriority(const PluginMetadata &metadata)
+{
+    return metadata.type == QStringLiteral("service") ? 0 : 1;
+}
+
+} // namespace
 
 QString pluginStateToString(PluginState state)
 {
@@ -52,7 +65,7 @@ void PluginManager::loadPlugins(const QString &path)
         return;
     }
 
-    const QFileInfoList entries = pluginsDir.entryInfoList(QDir::Files);
+    const QFileInfoList entries = pluginsDir.entryInfoList(QDir::Files, QDir::Name);
     for (const QFileInfo &entry : entries) {
         const QString filePath = entry.absoluteFilePath();
         if (!QLibrary::isLibrary(filePath)) {
@@ -89,66 +102,26 @@ void PluginManager::loadPlugins(const QString &path)
             continue;
         }
 
-        QObject *instance = loader->instance();
-        if (!instance) {
-            qWarning() << "Failed to load plugin:" << filePath << loader->errorString();
-            PluginRecord record;
-            record.loader = loader;
-            record.filePath = filePath;
-            record.name = metadata.name;
-            record.metadata = metadata;
-            record.errorString = loader->errorString();
-            record.state = PluginState::Failed;
-            m_records.append(record);
-            loader->deleteLater();
-            continue;
-        }
-
-        IPlugin *plugin = qobject_cast<IPlugin *>(instance);
-        if (!plugin) {
-            qWarning() << "Loaded library is not an IPlugin:" << filePath;
-            PluginRecord record;
-            record.loader = loader;
-            record.filePath = filePath;
-            record.name = metadata.name;
-            record.metadata = metadata;
-            record.errorString = QStringLiteral("Loaded library is not an IPlugin");
-            record.state = PluginState::Failed;
-            m_records.append(record);
-            loader->unload();
-            loader->deleteLater();
-            continue;
-        }
-
         PluginRecord record;
         record.loader = loader;
-        record.plugin = plugin;
         record.filePath = filePath;
         record.name = metadata.name;
         record.metadata = metadata;
         record.state = PluginState::Loaded;
-
-        plugin->setContext(m_context);
-        if (!plugin->initialize()) {
-            qWarning() << "Plugin initialization failed:" << plugin->name();
-            record.errorString = QStringLiteral("Plugin initialization failed");
-            record.state = PluginState::Failed;
-            m_records.append(record);
-            loader->unload();
-            loader->deleteLater();
-            continue;
-        }
-
-        record.state = PluginState::Initialized;
-        plugin->start();
-        record.state = PluginState::Started;
         m_records.append(record);
     }
+
+    startScannedPlugins();
 }
 
 MessageBus *PluginManager::messageBus() const
 {
     return m_messageBus;
+}
+
+CapabilityRegistry *PluginManager::capabilityRegistry() const
+{
+    return m_context ? m_context->capabilityRegistry() : nullptr;
 }
 
 void PluginManager::setPluginEnabled(const QString &pluginId, bool enabled)
@@ -195,9 +168,168 @@ void PluginManager::stopPlugin(PluginRecord &record)
         return;
     }
 
+    if (capabilityRegistry()) {
+        capabilityRegistry()->unregisterPluginCapabilities(record.metadata.id);
+    }
     record.plugin->stop();
     record.state = PluginState::Stopped;
     if (record.loader) {
         record.loader->unload();
+    }
+}
+
+void PluginManager::startScannedPlugins()
+{
+    QSet<int> pendingIndexes;
+    QSet<QString> knownPluginIds;
+    QSet<QString> startedPluginIds;
+
+    for (int index = 0; index < m_records.size(); ++index) {
+        const PluginRecord &record = m_records.at(index);
+        if (record.metadata.isValid()) {
+            knownPluginIds.insert(record.metadata.id);
+        }
+        if (record.state == PluginState::Loaded) {
+            pendingIndexes.insert(index);
+        }
+    }
+
+    bool progressed = true;
+    while (!pendingIndexes.isEmpty() && progressed) {
+        progressed = false;
+        QList<int> readyIndexes;
+
+        for (int index : pendingIndexes) {
+            const PluginRecord &record = m_records.at(index);
+            bool missingKnownDependency = false;
+            for (const QString &dependencyId : record.metadata.dependencies) {
+                if (!knownPluginIds.contains(dependencyId)) {
+                    missingKnownDependency = true;
+                    break;
+                }
+            }
+
+            if (!missingKnownDependency && dependenciesSatisfied(record, startedPluginIds)) {
+                readyIndexes.append(index);
+            }
+        }
+
+        std::sort(readyIndexes.begin(), readyIndexes.end(), [this](int left, int right) {
+            const PluginMetadata &leftMetadata = m_records.at(left).metadata;
+            const PluginMetadata &rightMetadata = m_records.at(right).metadata;
+            const int leftPriority = pluginTypePriority(leftMetadata);
+            const int rightPriority = pluginTypePriority(rightMetadata);
+            if (leftPriority != rightPriority) {
+                return leftPriority < rightPriority;
+            }
+            return leftMetadata.id < rightMetadata.id;
+        });
+
+        for (int index : readyIndexes) {
+            if (startPlugin(index)) {
+                startedPluginIds.insert(m_records.at(index).metadata.id);
+            }
+            pendingIndexes.remove(index);
+            progressed = true;
+        }
+    }
+
+    if (!pendingIndexes.isEmpty()) {
+        failUnresolvedDependencies(pendingIndexes);
+    }
+}
+
+bool PluginManager::startPlugin(int index)
+{
+    if (index < 0 || index >= m_records.size()) {
+        return false;
+    }
+
+    PluginRecord &record = m_records[index];
+    QPluginLoader *loader = record.loader;
+    if (!loader) {
+        record.errorString = QStringLiteral("Plugin loader is null");
+        record.state = PluginState::Failed;
+        return false;
+    }
+
+        QObject *instance = loader->instance();
+        if (!instance) {
+            qWarning() << "Failed to load plugin:" << record.filePath << loader->errorString();
+            record.errorString = loader->errorString();
+            record.state = PluginState::Failed;
+            loader->deleteLater();
+            return false;
+        }
+
+        IPlugin *plugin = qobject_cast<IPlugin *>(instance);
+        if (!plugin) {
+            qWarning() << "Loaded library is not an IPlugin:" << record.filePath;
+            record.errorString = QStringLiteral("Loaded library is not an IPlugin");
+            record.state = PluginState::Failed;
+            loader->unload();
+            loader->deleteLater();
+            return false;
+        }
+
+        record.plugin = plugin;
+        record.state = PluginState::Loaded;
+
+        plugin->setContext(m_context);
+        if (!plugin->initialize()) {
+            qWarning() << "Plugin initialization failed:" << plugin->name();
+            record.errorString = QStringLiteral("Plugin initialization failed");
+            record.state = PluginState::Failed;
+            loader->unload();
+            loader->deleteLater();
+            return false;
+        }
+
+        record.state = PluginState::Initialized;
+        plugin->start();
+        record.state = PluginState::Started;
+        return true;
+}
+
+bool PluginManager::dependenciesSatisfied(const PluginRecord &record, const QSet<QString> &startedPluginIds) const
+{
+    for (const QString &dependencyId : record.metadata.dependencies) {
+        if (!startedPluginIds.contains(dependencyId)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void PluginManager::failUnresolvedDependencies(const QSet<int> &pendingIndexes)
+{
+    QSet<QString> availableStartedIds;
+    QSet<QString> knownIds;
+    for (const PluginRecord &record : m_records) {
+        if (record.metadata.isValid()) {
+            knownIds.insert(record.metadata.id);
+        }
+        if (record.state == PluginState::Started) {
+            availableStartedIds.insert(record.metadata.id);
+        }
+    }
+
+    for (int index : pendingIndexes) {
+        PluginRecord &record = m_records[index];
+        QStringList missingDependencies;
+        for (const QString &dependencyId : record.metadata.dependencies) {
+            if (!knownIds.contains(dependencyId) || !availableStartedIds.contains(dependencyId)) {
+                missingDependencies.append(dependencyId);
+            }
+        }
+
+        record.errorString = missingDependencies.isEmpty()
+                ? QStringLiteral("Plugin dependency cycle detected")
+                : QStringLiteral("Plugin dependencies not satisfied: %1").arg(missingDependencies.join(QStringLiteral(", ")));
+        record.state = PluginState::Failed;
+        if (record.loader) {
+            record.loader->deleteLater();
+        }
+        qWarning() << "Plugin dependencies not satisfied:" << record.metadata.id << record.errorString;
     }
 }

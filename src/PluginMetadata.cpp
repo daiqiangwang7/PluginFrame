@@ -1,5 +1,7 @@
 #include "PluginMetadata.h"
 
+#include <QJsonArray>
+
 namespace {
 
 bool readRequiredString(const QJsonObject &json,
@@ -51,6 +53,27 @@ PluginMetadata PluginMetadata::fromJsonObject(const QJsonObject &json, QString *
             return PluginMetadata();
         }
         metadata.enabled = json.value(QStringLiteral("enabled")).toBool();
+    }
+
+    if (json.contains(QStringLiteral("dependencies"))) {
+        if (!json.value(QStringLiteral("dependencies")).isArray()) {
+            if (errorString) {
+                *errorString = QStringLiteral("Plugin metadata field dependencies must be string array");
+            }
+            return PluginMetadata();
+        }
+
+        const QJsonArray dependencies = json.value(QStringLiteral("dependencies")).toArray();
+        for (const QJsonValue &value : dependencies) {
+            if (!value.isString() || value.toString().trimmed().isEmpty()) {
+                if (errorString) {
+                    *errorString = QStringLiteral("Plugin metadata field dependencies must be string array");
+                }
+                return PluginMetadata();
+            }
+            metadata.dependencies.append(value.toString().trimmed());
+        }
+        metadata.dependencies.removeDuplicates();
     }
 
     return metadata;

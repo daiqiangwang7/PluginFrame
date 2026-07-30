@@ -3,6 +3,7 @@
 
 #include "IPluginContext.h"
 
+class CapabilityRegistry;
 class MessageBus;
 
 class PluginContext : public IPluginContext
@@ -22,7 +23,14 @@ public:
      */
     MessageBus *messageBus() const override;
 
+    /*
+     * 获取插件能力注册中心。
+     * 返回构造时创建的共享 CapabilityRegistry 指针。
+     */
+    CapabilityRegistry *capabilityRegistry() const override;
+
 private:
+    CapabilityRegistry *m_capabilityRegistry = nullptr;
     MessageBus *m_messageBus = nullptr;
 };
 

@@ -106,22 +106,6 @@ QPushButton#ThemeButton:hover {
     color: #00E5FF;
 }
 
-QPushButton#MinimizeButton {
-    qproperty-icon: url(:/icons/window/dark/minimize.svg);
-}
-
-QPushButton#MaximizeButton {
-    qproperty-icon: url(:/icons/window/dark/maximize.svg);
-}
-
-QPushButton#MaximizeButton[windowMaximized="true"] {
-    qproperty-icon: url(:/icons/window/dark/restore.svg);
-}
-
-QPushButton#CloseButton {
-    qproperty-icon: url(:/icons/window/dark/close.svg);
-}
-
 QPushButton#CloseButton:hover {
     background: #FF2D75;
     border-color: #FF2D75;

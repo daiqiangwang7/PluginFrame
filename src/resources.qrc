@@ -1,14 +1,14 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="icons/window/dark/minimize.svg">../assets/icons/window/dark/minimize.svg</file>
-        <file alias="icons/window/dark/maximize.svg">../assets/icons/window/dark/maximize.svg</file>
-        <file alias="icons/window/dark/restore.svg">../assets/icons/window/dark/restore.svg</file>
-        <file alias="icons/window/dark/close.svg">../assets/icons/window/dark/close.svg</file>
-        <file alias="icons/window/light/minimize.svg">../assets/icons/window/light/minimize.svg</file>
-        <file alias="icons/window/light/maximize.svg">../assets/icons/window/light/maximize.svg</file>
-        <file alias="icons/window/light/restore.svg">../assets/icons/window/light/restore.svg</file>
-        <file alias="icons/window/light/close.svg">../assets/icons/window/light/close.svg</file>
         <file alias="icons/theme/dark/skin.png">../assets/icons/theme/dark/skin.png</file>
         <file alias="icons/theme/light/skin.png">../assets/icons/theme/light/skin.png</file>
+        <file alias="icons/window/dark/close.png">../assets/icons/window/dark/close.png</file>
+        <file alias="icons/window/dark/maximize.png">../assets/icons/window/dark/maximize.png</file>
+        <file alias="icons/window/dark/minimize.png">../assets/icons/window/dark/minimize.png</file>
+        <file alias="icons/window/dark/restore.png">../assets/icons/window/dark/restore.png</file>
+        <file alias="icons/window/light/close.png">../assets/icons/window/light/close.png</file>
+        <file alias="icons/window/light/maximize.png">../assets/icons/window/light/maximize.png</file>
+        <file alias="icons/window/light/minimize.png">../assets/icons/window/light/minimize.png</file>
+        <file alias="icons/window/light/restore.png">../assets/icons/window/light/restore.png</file>
     </qresource>
 </RCC>

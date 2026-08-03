@@ -2,6 +2,7 @@
 #define TITLEBAR_H
 
 #include <QWidget>
+#include <QString>
 
 class QLabel;
 class QPushButton;
@@ -81,6 +82,7 @@ private:
     void updateMaximizeButtonState(bool maximized);
 
     QPoint m_dragPosition;
+    QString m_themeName = QStringLiteral("cyber-dark");
     QLabel *m_titleLabel = nullptr;
     QPushButton *m_themeButton = nullptr;
     QPushButton *m_minimizeButton = nullptr;

@@ -29,6 +29,7 @@ QString themeIconPath(const QString &themeName)
 TitleBar::TitleBar(QWidget *parent)
     : QWidget(parent)
 {
+    Q_INIT_RESOURCE(resources);
     setupUi();
 }
 

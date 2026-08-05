@@ -42,6 +42,24 @@ cmake --build build --config Debug
 build/bin/Debug/plugins/
 ```
 
+## 插件创建向导
+
+框架提供 `PluginCreator.exe` 图形化插件创建向导，可用于生成标准视图插件和服务插件。
+
+构建：
+
+```powershell
+cmake --build build --config Debug --target PluginCreator
+```
+
+运行：
+
+```powershell
+.\build\bin\Debug\PluginCreator.exe
+```
+
+视图插件默认生成独立 QWidget 和 `.ui` 文件。服务插件默认生成无界面的后台服务模板。生成完成后，按照工具提示在根目录 `CMakeLists.txt` 中添加对应插件目录即可参与构建。
+
 ## 插件元数据
 
 每个插件通过 `Q_PLUGIN_METADATA` 引用同目录下的 `metadata.json`。

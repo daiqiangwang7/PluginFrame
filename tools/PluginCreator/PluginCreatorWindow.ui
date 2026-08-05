@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PluginCreatorWindow</class>
+ <widget class="QMainWindow" name="PluginCreatorWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>760</width>
+    <height>520</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>插件创建向导</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="mainLayout">
+    <item>
+     <widget class="QStackedWidget" name="pageStack">
+      <widget class="QWidget" name="typePage">
+       <layout class="QVBoxLayout" name="typeLayout">
+        <item>
+         <widget class="QLabel" name="typeTitleLabel">
+          <property name="text">
+           <string>选择插件类型</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="viewPluginRadio">
+          <property name="text">
+           <string>视图插件（带 .ui 界面）</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="servicePluginRadio">
+          <property name="text">
+           <string>服务插件（后台运行，无界面）</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="typeSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>320</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="infoPage">
+       <layout class="QFormLayout" name="infoLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="classNameLabel">
+          <property name="text">
+           <string>插件类名</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="classNameEdit"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="pluginIdLabel">
+          <property name="text">
+           <string>插件 ID</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="pluginIdEdit"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="displayNameLabel">
+          <property name="text">
+           <string>显示名称</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="displayNameEdit"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="versionLabel">
+          <property name="text">
+           <string>版本号</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="versionEdit"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="authorLabel">
+          <property name="text">
+           <string>作者</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="authorEdit"/>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="descriptionLabel">
+          <property name="text">
+           <string>描述</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QTextEdit" name="descriptionEdit"/>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="outputDirectoryLabel">
+          <property name="text">
+           <string>输出目录</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <layout class="QHBoxLayout" name="outputLayout">
+          <item>
+           <widget class="QLineEdit" name="outputDirectoryEdit"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="chooseDirectoryButton">
+            <property name="text">
+             <string>选择</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="viewOptionsPage">
+       <layout class="QFormLayout" name="viewOptionsLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="areaLabel">
+          <property name="text">
+           <string>默认窗口区域</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="areaComboBox"/>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QLabel" name="uiFileInfoLabel">
+          <property name="text">
+           <string>视图插件默认生成独立 QWidget 和 .ui 文件。</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="commonOptionsPage">
+       <layout class="QVBoxLayout" name="commonOptionsLayout">
+        <item>
+         <widget class="QLabel" name="commonTitleLabel">
+          <property name="text">
+           <string>选择默认接入能力</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="registerCapabilityCheck">
+          <property name="text">
+           <string>注册能力</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="messageBusCheck">
+          <property name="text">
+           <string>使用消息总线</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="logServiceCheck">
+          <property name="text">
+           <string>使用日志服务</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="pluginSettingsCheck">
+          <property name="text">
+           <string>使用插件私有配置</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="commonSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>260</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="summaryPage">
+       <layout class="QVBoxLayout" name="summaryLayout">
+        <item>
+         <widget class="QLabel" name="summaryLabel">
+          <property name="text">
+           <string>确认生成内容</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="summaryTextEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="resultPage">
+       <layout class="QVBoxLayout" name="resultLayout">
+        <item>
+         <widget class="QLabel" name="resultLabel">
+          <property name="text">
+           <string>生成结果</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="resultTextEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="buttonLayout">
+      <item>
+       <spacer name="buttonSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>380</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="previousButton">
+        <property name="text">
+         <string>上一步</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="nextButton">
+        <property name="text">
+         <string>下一步</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generateButton">
+        <property name="text">
+         <string>生成</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="closeButton">
+        <property name="text">
+         <string>关闭</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

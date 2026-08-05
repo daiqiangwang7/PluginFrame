@@ -23,6 +23,7 @@ endif()
 
 add_subdirectory(framework)
 add_subdirectory(src)
+add_subdirectory(tools/PluginCreator)
 add_subdirectory(plugins/HelloPlugin)
 add_subdirectory(plugins/TimeServicePlugin)
 

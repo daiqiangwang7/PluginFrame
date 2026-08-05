@@ -55,6 +55,18 @@ PluginMetadata PluginMetadata::fromJsonObject(const QJsonObject &json, QString *
         metadata.enabled = json.value(QStringLiteral("enabled")).toBool();
     }
 
+    if (json.contains(QStringLiteral("area"))) {
+        if (!json.value(QStringLiteral("area")).isString()
+                || json.value(QStringLiteral("area")).toString().trimmed().isEmpty()) {
+            if (errorString) {
+                *errorString = QStringLiteral("Plugin metadata field area must be string");
+            }
+            return PluginMetadata();
+        }
+        metadata.area = json.value(QStringLiteral("area")).toString().trimmed();
+        metadata.hasArea = true;
+    }
+
     if (json.contains(QStringLiteral("dependencies"))) {
         if (!json.value(QStringLiteral("dependencies")).isArray()) {
             if (errorString) {

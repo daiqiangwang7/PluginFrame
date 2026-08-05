@@ -100,7 +100,11 @@ void MainWindow::loadPlugins()
             const auto records = m_pluginManager->pluginRecords();
             for (const PluginRecord &record : records) {
                 if (record.plugin == view) {
-                    area = config.pluginArea(record.metadata.id);
+                    if (config.pluginSettings.contains(record.metadata.id)) {
+                        area = config.pluginArea(record.metadata.id);
+                    } else if (record.metadata.hasArea) {
+                        area = windowAreaFromString(record.metadata.area);
+                    }
                     break;
                 }
             }

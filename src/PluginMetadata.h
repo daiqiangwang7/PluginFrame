@@ -12,8 +12,10 @@ struct PluginMetadata
     QString displayName;
     QString version;
     QString type;
+    QString area;
     QStringList dependencies;
     bool enabled = true;
+    bool hasArea = false;
 
     /*
      * 从 JSON 对象解析插件元数据。

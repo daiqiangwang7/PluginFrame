@@ -3,10 +3,15 @@
 #include "PluginProjectValidator.h"
 #include "ui_PluginCreatorWindow.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QLabel>
+#include <QList>
 #include <QMessageBox>
 #include <QRegExp>
+#include <QStyle>
 
 namespace {
 
@@ -41,6 +46,40 @@ QString areaDisplayName(CreatorWindowArea area)
     default:
         return QStringLiteral("中心区");
     }
+}
+
+bool looksLikeProjectRoot(const QString &path)
+{
+    const QDir dir(path);
+    return QFileInfo(dir.filePath(QStringLiteral("CMakeLists.txt"))).exists()
+            && QFileInfo(dir.filePath(QStringLiteral("framework"))).isDir()
+            && QFileInfo(dir.filePath(QStringLiteral("plugins"))).isDir();
+}
+
+QString findProjectRoot()
+{
+    QStringList seeds;
+    seeds << QDir::currentPath()
+          << QCoreApplication::applicationDirPath();
+
+    for (const QString &seed : seeds) {
+        QDir dir(seed);
+        for (int i = 0; i < 8; ++i) {
+            if (looksLikeProjectRoot(dir.absolutePath())) {
+                return dir.absolutePath();
+            }
+            if (!dir.cdUp()) {
+                break;
+            }
+        }
+    }
+
+    return QDir::currentPath();
+}
+
+QString pluginOutputPath(const QString &projectRoot, const QString &className)
+{
+    return QDir(projectRoot).filePath(QStringLiteral("plugins/%1").arg(className.trimmed()));
 }
 
 } // namespace
@@ -115,7 +154,11 @@ void PluginCreatorWindow::generatePlugin()
     }
 
     if (result.success) {
-        resultText.append(QStringLiteral("\n请在根目录 CMakeLists.txt 中添加：\n"));
+        if (options.autoAddToProject) {
+            resultText.append(QStringLiteral("\n已自动写入根目录 CMakeLists.txt：\n"));
+        } else {
+            resultText.append(QStringLiteral("\n请在根目录 CMakeLists.txt 中添加：\n"));
+        }
         resultText.append(QStringLiteral("add_subdirectory(plugins/%1)\n").arg(options.className.trimmed()));
         ui->pageStack->setCurrentIndex(ResultPage);
         ui->resultTextEdit->setPlainText(resultText);
@@ -146,15 +189,135 @@ void PluginCreatorWindow::updatePluginTypeUi()
 
 void PluginCreatorWindow::setupDefaults()
 {
-    setWindowTitle(QStringLiteral("插件创建向导"));
-    resize(760, 520);
+    setWindowTitle(QStringLiteral("插件注册器"));
+    resize(920, 620);
+    setMinimumSize(860, 560);
+    setStyleSheet(QStringLiteral(R"STYLE(
+        QMainWindow {
+            background: #081119;
+            color: #d7fbff;
+        }
+        QWidget#centralwidget {
+            background: #081119;
+        }
+        QWidget#stepPanel {
+            border: 1px solid #12445a;
+            background: #0b1a25;
+        }
+        QLabel {
+            color: #d7fbff;
+            font-size: 13px;
+        }
+        QLabel#creatorTitleLabel {
+            color: #00eaff;
+            font-size: 24px;
+            font-weight: 700;
+            padding: 10px 4px 0 4px;
+        }
+        QLabel#creatorSubTitleLabel {
+            color: #688d9a;
+            font-size: 12px;
+            padding: 0 4px 18px 4px;
+        }
+        QLabel#stepTypeLabel,
+        QLabel#stepInfoLabel,
+        QLabel#stepViewLabel,
+        QLabel#stepAbilityLabel,
+        QLabel#stepSummaryLabel {
+            min-height: 34px;
+            border: 1px solid #12384b;
+            background: #08131c;
+            color: #80aab8;
+            padding-left: 12px;
+        }
+        QLabel#stepTypeLabel[active="true"],
+        QLabel#stepInfoLabel[active="true"],
+        QLabel#stepViewLabel[active="true"],
+        QLabel#stepAbilityLabel[active="true"],
+        QLabel#stepSummaryLabel[active="true"] {
+            border: 1px solid #00eaff;
+            background: #102c3a;
+            color: #ffffff;
+        }
+        QLabel#typeTitleLabel,
+        QLabel#commonTitleLabel,
+        QLabel#summaryLabel,
+        QLabel#resultLabel {
+            color: #00eaff;
+            font-size: 20px;
+            font-weight: 600;
+            padding: 4px 0 12px 0;
+        }
+        QStackedWidget {
+            border: 1px solid #14516b;
+            background: #0b1720;
+        }
+        QLineEdit,
+        QTextEdit,
+        QComboBox {
+            min-height: 30px;
+            border: 1px solid #17617d;
+            background: #0a151e;
+            color: #e9fdff;
+            selection-background-color: #00a8c6;
+            padding: 5px 8px;
+        }
+        QTextEdit {
+            min-height: 80px;
+        }
+        QLineEdit:focus,
+        QTextEdit:focus,
+        QComboBox:focus {
+            border: 1px solid #00eaff;
+        }
+        QPushButton {
+            min-width: 86px;
+            min-height: 30px;
+            border: 1px solid #00c8e8;
+            background: #092232;
+            color: #d7fbff;
+            padding: 5px 14px;
+        }
+        QPushButton:hover {
+            background: #0d3548;
+            color: #ffffff;
+        }
+        QPushButton:disabled {
+            border-color: #24404a;
+            color: #637982;
+            background: #0a141b;
+        }
+        QRadioButton,
+        QCheckBox {
+            color: #d7fbff;
+            min-height: 30px;
+            spacing: 8px;
+        }
+        QRadioButton::indicator,
+        QCheckBox::indicator {
+            width: 16px;
+            height: 16px;
+        }
+        QRadioButton::indicator:checked,
+        QCheckBox::indicator:checked {
+            background: #00eaff;
+            border: 1px solid #b8f7ff;
+        }
+        QRadioButton::indicator:unchecked,
+        QCheckBox::indicator:unchecked {
+            background: #0a151e;
+            border: 1px solid #17617d;
+        }
+    )STYLE"));
 
+    const QString projectRoot = findProjectRoot();
     ui->viewPluginRadio->setChecked(true);
     ui->versionEdit->setText(QStringLiteral("1.0.0"));
     ui->classNameEdit->setText(QStringLiteral("MyViewPlugin"));
     ui->pluginIdEdit->setText(QStringLiteral("com.pluginframe.my-view-plugin"));
     ui->displayNameEdit->setText(QStringLiteral("我的视图插件"));
-    ui->outputDirectoryEdit->setText(QDir::toNativeSeparators(QDir::current().absoluteFilePath(QStringLiteral("plugins/MyViewPlugin"))));
+    ui->projectRootEdit->setText(QDir::toNativeSeparators(projectRoot));
+    ui->outputDirectoryEdit->setText(QDir::toNativeSeparators(pluginOutputPath(projectRoot, QStringLiteral("MyViewPlugin"))));
 
     ui->areaComboBox->addItem(QStringLiteral("中心区"), static_cast<int>(CreatorWindowArea::Central));
     ui->areaComboBox->addItem(QStringLiteral("左侧区"), static_cast<int>(CreatorWindowArea::LeftDock));
@@ -166,6 +329,7 @@ void PluginCreatorWindow::setupDefaults()
     ui->messageBusCheck->setChecked(true);
     ui->logServiceCheck->setChecked(true);
     ui->pluginSettingsCheck->setChecked(true);
+    ui->autoAddToProjectCheck->setChecked(true);
 
     connect(ui->previousButton, &QPushButton::clicked, this, &PluginCreatorWindow::previousPage);
     connect(ui->nextButton, &QPushButton::clicked, this, &PluginCreatorWindow::nextPage);
@@ -183,7 +347,7 @@ void PluginCreatorWindow::setupDefaults()
 
         ui->pluginIdEdit->setText(defaultPluginId(className));
         ui->displayNameEdit->setText(className);
-        ui->outputDirectoryEdit->setText(QDir::toNativeSeparators(QDir::current().absoluteFilePath(QStringLiteral("plugins/%1").arg(className))));
+        ui->outputDirectoryEdit->setText(QDir::toNativeSeparators(pluginOutputPath(QDir::fromNativeSeparators(ui->projectRootEdit->text()), className)));
     });
 
     ui->pageStack->setCurrentIndex(TypePage);
@@ -201,7 +365,9 @@ PluginProjectOptions PluginCreatorWindow::collectOptions() const
     options.version = ui->versionEdit->text().trimmed();
     options.author = ui->authorEdit->text().trimmed();
     options.description = ui->descriptionEdit->toPlainText().trimmed();
+    options.projectRootDirectory = QDir::fromNativeSeparators(ui->projectRootEdit->text().trimmed());
     options.outputDirectory = QDir::fromNativeSeparators(ui->outputDirectoryEdit->text().trimmed());
+    options.autoAddToProject = ui->autoAddToProjectCheck->isChecked();
     options.registerCapability = ui->registerCapabilityCheck->isChecked();
     options.useMessageBus = ui->messageBusCheck->isChecked();
     options.useLogService = ui->logServiceCheck->isChecked();
@@ -234,12 +400,18 @@ void PluginCreatorWindow::refreshSummary()
     if (options.type == CreatorPluginType::View) {
         text.append(QStringLiteral("窗口区域：%1\n").arg(areaDisplayName(options.area)));
     }
-    text.append(QStringLiteral("输出目录：%1\n\n").arg(QDir::toNativeSeparators(options.outputDirectory)));
+    text.append(QStringLiteral("项目根目录：%1\n").arg(QDir::toNativeSeparators(options.projectRootDirectory)));
+    text.append(QStringLiteral("输出目录：%1\n").arg(QDir::toNativeSeparators(options.outputDirectory)));
+    text.append(QStringLiteral("自动加入主工程：%1\n\n").arg(options.autoAddToProject ? QStringLiteral("是") : QStringLiteral("否")));
     text.append(QStringLiteral("将生成文件：\n"));
     for (const QString &fileName : files) {
         text.append(QStringLiteral("- %1\n").arg(fileName));
     }
-    text.append(QStringLiteral("\n生成后请在根目录 CMakeLists.txt 中添加：\n"));
+    if (options.autoAddToProject) {
+        text.append(QStringLiteral("\n生成后将自动写入根目录 CMakeLists.txt：\n"));
+    } else {
+        text.append(QStringLiteral("\n生成后请手动在根目录 CMakeLists.txt 中添加：\n"));
+    }
     text.append(QStringLiteral("add_subdirectory(plugins/%1)\n").arg(options.className));
 
     ui->summaryTextEdit->setPlainText(text);
@@ -255,6 +427,49 @@ void PluginCreatorWindow::updateButtons()
     if (currentIndex == TypePage || currentIndex == ResultPage) {
         ui->previousButton->setEnabled(false);
     }
+
+    updateStepLabels();
+}
+
+void PluginCreatorWindow::updateStepLabels()
+{
+    QList<QLabel *> labels;
+    labels << ui->stepTypeLabel
+           << ui->stepInfoLabel
+           << ui->stepViewLabel
+           << ui->stepAbilityLabel
+           << ui->stepSummaryLabel;
+
+    for (QLabel *label : labels) {
+        label->setProperty("active", false);
+        label->style()->unpolish(label);
+        label->style()->polish(label);
+    }
+
+    QLabel *activeLabel = ui->stepTypeLabel;
+    switch (ui->pageStack->currentIndex()) {
+    case InfoPage:
+        activeLabel = ui->stepInfoLabel;
+        break;
+    case ViewOptionsPage:
+        activeLabel = ui->stepViewLabel;
+        break;
+    case CommonOptionsPage:
+        activeLabel = ui->stepAbilityLabel;
+        break;
+    case SummaryPage:
+    case ResultPage:
+        activeLabel = ui->stepSummaryLabel;
+        break;
+    case TypePage:
+    default:
+        activeLabel = ui->stepTypeLabel;
+        break;
+    }
+
+    activeLabel->setProperty("active", true);
+    activeLabel->style()->unpolish(activeLabel);
+    activeLabel->style()->polish(activeLabel);
 }
 
 bool PluginCreatorWindow::isViewPluginSelected() const

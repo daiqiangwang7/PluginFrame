@@ -29,7 +29,9 @@ struct PluginProjectOptions
     QString version = QStringLiteral("1.0.0");
     QString author;
     QString description;
+    QString projectRootDirectory;
     QString outputDirectory;
+    bool autoAddToProject = true;
     bool registerCapability = true;
     bool useMessageBus = true;
     bool useLogService = true;

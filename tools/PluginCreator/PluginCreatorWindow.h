@@ -83,6 +83,12 @@ private:
     void updateButtons();
 
     /*
+     * 刷新注册器步骤导航状态。
+     * 根据当前页高亮左侧步骤文本。
+     */
+    void updateStepLabels();
+
+    /*
      * 判断当前插件类型是否为视图插件。
      * 返回 true 表示当前选择视图插件，false 表示服务插件。
      */

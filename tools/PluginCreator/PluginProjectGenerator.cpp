@@ -4,6 +4,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRegExp>
@@ -540,11 +541,18 @@ PluginGenerationResult PluginProjectGenerator::generate(const PluginProjectOptio
             ? generateViewPlugin(options, &result)
             : generateServicePlugin(options, &result);
 
-    if (ok) {
-        result.success = true;
-        result.message = QStringLiteral("插件工程生成成功。");
+    if (!ok) {
+        return result;
     }
 
+    if (options.autoAddToProject && !addPluginToRootCMake(options, &result)) {
+        return result;
+    }
+
+    result.success = true;
+    result.message = options.autoAddToProject
+            ? QStringLiteral("插件工程生成成功，并已添加到主工程。")
+            : QStringLiteral("插件工程生成成功。");
     return result;
 }
 
@@ -631,6 +639,74 @@ bool PluginProjectGenerator::renderToFile(const QString &filePath,
     }
 
     return writeTextFile(filePath, content, result);
+}
+
+bool PluginProjectGenerator::addPluginToRootCMake(const PluginProjectOptions &options,
+                                                  PluginGenerationResult *result) const
+{
+    const QString projectRoot = options.projectRootDirectory.trimmed();
+    if (projectRoot.isEmpty()) {
+        if (result) {
+            result->message = QStringLiteral("自动加入主工程失败：项目根目录为空。");
+        }
+        return false;
+    }
+
+    const QString cmakePath = QDir(projectRoot).filePath(QStringLiteral("CMakeLists.txt"));
+    QFile file(cmakePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        if (result) {
+            result->message = QStringLiteral("自动加入主工程失败：无法读取 %1。").arg(cmakePath);
+        }
+        return false;
+    }
+
+    QTextStream input(&file);
+    input.setCodec("UTF-8");
+    QString content = input.readAll();
+    file.close();
+
+    const QString relativePath = pluginRelativePath(options);
+    const QString addLine = QStringLiteral("add_subdirectory(%1)").arg(relativePath);
+    if (content.contains(addLine)) {
+        if (result) {
+            result->generatedFiles.append(cmakePath + QStringLiteral("（已存在 add_subdirectory，未重复写入）"));
+        }
+        return true;
+    }
+
+    if (!content.endsWith(QLatin1Char('\n'))) {
+        content.append(QLatin1Char('\n'));
+    }
+    content.append(addLine);
+    content.append(QLatin1Char('\n'));
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        if (result) {
+            result->message = QStringLiteral("自动加入主工程失败：无法写入 %1。").arg(cmakePath);
+        }
+        return false;
+    }
+
+    QTextStream output(&file);
+    output.setCodec("UTF-8");
+    output << content;
+
+    if (result) {
+        result->generatedFiles.append(cmakePath);
+    }
+    return true;
+}
+
+QString PluginProjectGenerator::pluginRelativePath(const PluginProjectOptions &options) const
+{
+    const QDir projectRoot(options.projectRootDirectory);
+    QString relativePath = projectRoot.relativeFilePath(options.outputDirectory);
+    relativePath = QDir::fromNativeSeparators(relativePath);
+    if (relativePath.startsWith(QStringLiteral("../"))) {
+        relativePath = QStringLiteral("plugins/%1").arg(options.className.trimmed());
+    }
+    return relativePath;
 }
 
 QMap<QString, QString> PluginProjectGenerator::variablesForOptions(const PluginProjectOptions &options) const

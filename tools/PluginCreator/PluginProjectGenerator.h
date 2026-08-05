@@ -44,6 +44,18 @@ private:
                       PluginGenerationResult *result) const;
 
     /*
+     * 将插件目录添加到主工程 CMakeLists.txt。
+     * options 为插件创建参数，result 用于记录写入结果和错误信息。
+     */
+    bool addPluginToRootCMake(const PluginProjectOptions &options, PluginGenerationResult *result) const;
+
+    /*
+     * 计算插件目录相对主工程根目录的路径。
+     * options 为插件创建参数，返回值用于生成 add_subdirectory 语句。
+     */
+    QString pluginRelativePath(const PluginProjectOptions &options) const;
+
+    /*
      * 创建模板变量表。
      * options 为插件创建参数，返回值用于模板渲染。
      */

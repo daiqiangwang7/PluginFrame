@@ -58,7 +58,7 @@ cmake --build build --config Debug --target PluginCreator
 .\build\bin\Debug\PluginCreator.exe
 ```
 
-视图插件默认生成独立 QWidget 和 `.ui` 文件。服务插件默认生成无界面的后台服务模板。生成完成后，按照工具提示在根目录 `CMakeLists.txt` 中添加对应插件目录即可参与构建。
+视图插件默认生成独立 QWidget 和 `.ui` 文件。服务插件默认生成无界面的后台服务模板。生成完成后，工具默认会自动把插件目录写入根目录 `CMakeLists.txt`，让新插件直接加入工程构建。
 
 ## 插件元数据
 

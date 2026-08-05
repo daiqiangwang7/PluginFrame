@@ -11,12 +11,94 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>插件创建向导</string>
+   <string>插件注册器</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="mainLayout">
     <item>
-     <widget class="QStackedWidget" name="pageStack">
+     <layout class="QHBoxLayout" name="contentLayout">
+      <item>
+       <widget class="QWidget" name="stepPanel">
+        <property name="minimumSize">
+         <size>
+          <width>190</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>220</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <layout class="QVBoxLayout" name="stepLayout">
+         <item>
+          <widget class="QLabel" name="creatorTitleLabel">
+           <property name="text">
+            <string>插件注册器</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="creatorSubTitleLabel">
+           <property name="text">
+            <string>Plugin Creator</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="stepTypeLabel">
+           <property name="text">
+            <string>01  类型</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="stepInfoLabel">
+           <property name="text">
+            <string>02  信息</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="stepViewLabel">
+           <property name="text">
+            <string>03  窗口</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="stepAbilityLabel">
+           <property name="text">
+            <string>04  能力</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="stepSummaryLabel">
+           <property name="text">
+            <string>05  确认</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="stepSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>260</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="pageStack">
       <widget class="QWidget" name="typePage">
        <layout class="QVBoxLayout" name="typeLayout">
         <item>
@@ -118,13 +200,27 @@
          <widget class="QTextEdit" name="descriptionEdit"/>
         </item>
         <item row="6" column="0">
+         <widget class="QLabel" name="projectRootLabel">
+          <property name="text">
+           <string>项目根目录</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="projectRootEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
          <widget class="QLabel" name="outputDirectoryLabel">
           <property name="text">
            <string>输出目录</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="7" column="1">
          <layout class="QHBoxLayout" name="outputLayout">
           <item>
            <widget class="QLineEdit" name="outputDirectoryEdit"/>
@@ -137,6 +233,13 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="8" column="1">
+         <widget class="QCheckBox" name="autoAddToProjectCheck">
+          <property name="text">
+           <string>自动加入主工程 CMakeLists.txt</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -249,7 +352,9 @@
         </item>
        </layout>
       </widget>
-     </widget>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="buttonLayout">

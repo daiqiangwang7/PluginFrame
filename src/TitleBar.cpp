@@ -57,6 +57,13 @@ void TitleBar::setThemeName(const QString &themeName)
     emit themeIconChanged();
 }
 
+void TitleBar::setThemeButtonVisible(bool visible)
+{
+    if (m_themeButton) {
+        m_themeButton->setVisible(visible);
+    }
+}
+
 void TitleBar::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && window()) {
@@ -93,11 +100,11 @@ void TitleBar::mouseDoubleClickEvent(QMouseEvent *event)
 void TitleBar::setupUi()
 {
     setObjectName(QStringLiteral("TitleBar"));
-    setFixedHeight(42);
+    setFixedHeight(36);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(14, 0, 6, 0);
-    layout->setSpacing(6);
+    layout->setContentsMargins(12, 0, 4, 0);
+    layout->setSpacing(4);
 
     m_titleLabel = new QLabel(QStringLiteral("插件框架"), this);
     m_titleLabel->setObjectName(QStringLiteral("WindowTitle"));
@@ -105,25 +112,25 @@ void TitleBar::setupUi()
     m_themeButton = new QPushButton(this);
     m_themeButton->setObjectName(QStringLiteral("ThemeButton"));
     m_themeButton->setToolTip(QStringLiteral("切换皮肤"));
-    m_themeButton->setFixedSize(34, 28);
+    m_themeButton->setFixedSize(32, 28);
 
     m_minimizeButton = new QPushButton(this);
     m_minimizeButton->setObjectName(QStringLiteral("MinimizeButton"));
     m_minimizeButton->setToolTip(QStringLiteral("最小化"));
-    m_minimizeButton->setFixedSize(38, 28);
+    m_minimizeButton->setFixedSize(36, 28);
 
     m_maximizeButton = new QPushButton(this);
     m_maximizeButton->setObjectName(QStringLiteral("MaximizeButton"));
     m_maximizeButton->setToolTip(QStringLiteral("最大化"));
-    m_maximizeButton->setFixedSize(38, 28);
+    m_maximizeButton->setFixedSize(36, 28);
     updateMaximizeButtonState(false);
 
     m_closeButton = new QPushButton(this);
     m_closeButton->setObjectName(QStringLiteral("CloseButton"));
     m_closeButton->setToolTip(QStringLiteral("关闭"));
-    m_closeButton->setFixedSize(38, 28);
+    m_closeButton->setFixedSize(36, 28);
 
-    const QSize iconSize(18, 18);
+    const QSize iconSize(16, 16);
     m_themeButton->setIconSize(iconSize);
     m_minimizeButton->setIconSize(iconSize);
     m_maximizeButton->setIconSize(iconSize);

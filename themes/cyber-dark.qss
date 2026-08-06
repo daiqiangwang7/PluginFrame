@@ -10,6 +10,11 @@ QWidget#ShellRoot {
     border: 1px solid #00E5FF;
 }
 
+QWidget#FloatingWindowFrame {
+    background: #060B12;
+    border: 1px solid #00E5FF;
+}
+
 QWidget#Workspace {
     background: #060B12;
     border-top: 1px solid #00A8CC;
@@ -25,6 +30,7 @@ QFrame#TitleSeparator {
 QWidget#CyberDrawer {
     background: #07111D;
     border-left: 1px solid #00E5FF;
+    border-top: 1px solid #15384A;
     border-bottom: 1px solid #15384A;
 }
 
@@ -62,6 +68,35 @@ QPushButton#SidebarButton:hover {
     color: #00E5FF;
 }
 
+QToolButton#SidebarToolButton {
+    background: #0B1724;
+    border: 1px solid #15384A;
+    color: #9FDDE8;
+    padding: 4px;
+}
+
+QToolButton#SidebarToolButton:hover {
+    background: #102B3D;
+    border-color: #00E5FF;
+    color: #00E5FF;
+}
+
+QPushButton#DrawerPageButton {
+    background: #0B1724;
+    border: 1px solid #15384A;
+    color: #00E5FF;
+    min-width: 26px;
+    max-width: 26px;
+    min-height: 24px;
+    max-height: 24px;
+    padding: 0;
+}
+
+QLabel#DrawerPageLabel {
+    color: #00E5FF;
+    min-width: 42px;
+}
+
 QWidget#CyberStatusBar {
     background: #07111D;
     border-top: 1px solid #15384A;
@@ -74,6 +109,8 @@ QLabel#StatusSummary {
 QWidget#TitleBar {
     background: #09131F;
     border-bottom: 1px solid #00E5FF;
+    min-height: 36px;
+    max-height: 36px;
 }
 
 QLabel#WindowTitle {
@@ -89,13 +126,16 @@ QPushButton#ThemeButton {
     background: transparent;
     border: 1px solid transparent;
     color: #D7F9FF;
-    min-width: 38px;
+    min-width: 36px;
+    max-width: 36px;
     min-height: 28px;
+    max-height: 28px;
+    padding: 0;
 }
 
 QPushButton#ThemeButton {
-    min-width: 34px;
-    max-width: 34px;
+    min-width: 32px;
+    max-width: 32px;
 }
 
 QPushButton#MinimizeButton:hover,

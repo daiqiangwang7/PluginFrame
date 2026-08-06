@@ -100,7 +100,7 @@ void TitleBar::mouseDoubleClickEvent(QMouseEvent *event)
 void TitleBar::setupUi()
 {
     setObjectName(QStringLiteral("TitleBar"));
-    setFixedHeight(36);
+    setFixedHeight(32);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(12, 0, 4, 0);
@@ -112,7 +112,7 @@ void TitleBar::setupUi()
     m_themeButton = new QPushButton(this);
     m_themeButton->setObjectName(QStringLiteral("ThemeButton"));
     m_themeButton->setToolTip(QStringLiteral("切换皮肤"));
-    m_themeButton->setFixedSize(32, 28);
+    m_themeButton->setFixedSize(34, 28);
 
     m_minimizeButton = new QPushButton(this);
     m_minimizeButton->setObjectName(QStringLiteral("MinimizeButton"));
@@ -130,11 +130,10 @@ void TitleBar::setupUi()
     m_closeButton->setToolTip(QStringLiteral("关闭"));
     m_closeButton->setFixedSize(36, 28);
 
-    const QSize iconSize(16, 16);
-    m_themeButton->setIconSize(iconSize);
-    m_minimizeButton->setIconSize(iconSize);
-    m_maximizeButton->setIconSize(iconSize);
-    m_closeButton->setIconSize(iconSize);
+    m_themeButton->setIconSize(QSize(22, 22));
+    m_minimizeButton->setIconSize(QSize(16, 16));
+    m_maximizeButton->setIconSize(QSize(16, 16));
+    m_closeButton->setIconSize(QSize(16, 16));
     setThemeName(QStringLiteral("cyber-dark"));
 
     layout->addWidget(m_titleLabel);

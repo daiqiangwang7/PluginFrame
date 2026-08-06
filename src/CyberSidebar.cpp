@@ -12,9 +12,9 @@
 namespace {
 
 const int kCollapsedSize = 34;
-const int kExpandedWidth = 260;
-const int kExpandedHeight = 392;
-const int kTitleBarHeight = 36;
+const int kExpandedWidth = 226;
+const int kExpandedHeight = 326;
+const int kTitleBarHeight = 32;
 const int kStatusBarHeight = 30;
 const int kEntriesPerPage = 10;
 
@@ -89,23 +89,23 @@ void CyberSidebar::setupUi()
     m_handleButton = new QPushButton(QStringLiteral("≡"), this);
     m_handleButton->setObjectName(QStringLiteral("DrawerHandleButton"));
     m_handleButton->setToolTip(QStringLiteral("展开功能抽屉"));
-    m_handleButton->setFixedWidth(kCollapsedSize);
-    m_handleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    rootLayout->addWidget(m_handleButton);
+    m_handleButton->setFixedSize(kCollapsedSize, kCollapsedSize);
+    m_handleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    rootLayout->addWidget(m_handleButton, 0, Qt::AlignVCenter);
 
     m_contentWidget = new QWidget(this);
     m_contentWidget->setObjectName(QStringLiteral("DrawerContent"));
     m_contentLayout = new QVBoxLayout(m_contentWidget);
-    m_contentLayout->setContentsMargins(12, 12, 12, 10);
-    m_contentLayout->setSpacing(8);
+    m_contentLayout->setContentsMargins(8, 8, 8, 8);
+    m_contentLayout->setSpacing(6);
     rootLayout->addWidget(m_contentWidget, 1);
 
     m_entriesWidget = new QWidget(m_contentWidget);
     m_entriesWidget->setObjectName(QStringLiteral("DrawerEntries"));
     m_entriesLayout = new QGridLayout(m_entriesWidget);
     m_entriesLayout->setContentsMargins(0, 0, 0, 0);
-    m_entriesLayout->setHorizontalSpacing(8);
-    m_entriesLayout->setVerticalSpacing(8);
+    m_entriesLayout->setHorizontalSpacing(4);
+    m_entriesLayout->setVerticalSpacing(6);
     m_contentLayout->addWidget(m_entriesWidget);
 
     m_pagerWidget = new QWidget(m_contentWidget);
@@ -159,12 +159,7 @@ void CyberSidebar::updateExpandedState()
         m_handleButton->setText(m_expanded ? QStringLiteral("×") : QStringLiteral("≡"));
         m_handleButton->setToolTip(m_expanded ? QStringLiteral("收起功能抽屉")
                                                : QStringLiteral("展开功能抽屉"));
-        if (m_expanded) {
-            m_handleButton->setMinimumSize(kCollapsedSize, 0);
-            m_handleButton->setMaximumSize(kCollapsedSize, QWIDGETSIZE_MAX);
-        } else {
-            m_handleButton->setFixedSize(kCollapsedSize, kCollapsedSize);
-        }
+        m_handleButton->setFixedSize(kCollapsedSize, kCollapsedSize);
     }
 
     setFixedWidth(m_expanded ? kExpandedWidth : kCollapsedSize);
@@ -191,9 +186,9 @@ void CyberSidebar::rebuildEntryButtons()
         button->setObjectName(QStringLiteral("SidebarToolButton"));
         button->setText(entry.text);
         button->setIcon(QIcon(drawerIconPath(entry.iconName)));
-        button->setIconSize(QSize(26, 26));
+        button->setIconSize(QSize(24, 24));
         button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        button->setFixedSize(104, 58);
+        button->setFixedSize(88, 52);
         connect(button, &QToolButton::clicked, this, [this, entry]() {
             if (entry.windowEntry) {
                 emit windowRequested(entry.id);

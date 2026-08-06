@@ -23,8 +23,8 @@ QWidget#Workspace {
 QFrame#TitleSeparator {
     background: #00A8CC;
     border: none;
-    min-height: 2px;
-    max-height: 2px;
+    min-height: 1px;
+    max-height: 1px;
 }
 
 QWidget#CyberDrawer {
@@ -73,6 +73,10 @@ QToolButton#SidebarToolButton {
     border: 1px solid #A7CBD4;
     color: #274654;
     padding: 4px;
+    min-width: 88px;
+    max-width: 88px;
+    min-height: 52px;
+    max-height: 52px;
 }
 
 QToolButton#SidebarToolButton:hover {
@@ -109,8 +113,8 @@ QLabel#StatusSummary {
 QWidget#TitleBar {
     background: #DDF4F8;
     border-bottom: 1px solid #00A8CC;
-    min-height: 36px;
-    max-height: 36px;
+    min-height: 32px;
+    max-height: 32px;
 }
 
 QLabel#WindowTitle {
@@ -134,8 +138,8 @@ QPushButton#ThemeButton {
 }
 
 QPushButton#ThemeButton {
-    min-width: 32px;
-    max-width: 32px;
+    min-width: 34px;
+    max-width: 34px;
 }
 
 QPushButton#MinimizeButton:hover,

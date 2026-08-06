@@ -48,7 +48,7 @@ void MainWindow::setupUi()
 
     QFrame *titleSeparator = new QFrame(m_shellRoot);
     titleSeparator->setObjectName(QStringLiteral("TitleSeparator"));
-    titleSeparator->setFixedHeight(2);
+    titleSeparator->setFixedHeight(1);
     titleSeparator->setFrameShape(QFrame::NoFrame);
 
     m_windowManager = new WindowManager(m_shellRoot);

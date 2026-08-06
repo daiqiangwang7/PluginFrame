@@ -55,6 +55,12 @@ public:
      */
     bool activateWindow(const QString &id);
 
+    /*
+     * 设置窗口管理器当前主题名称。
+     * themeName 用于同步浮动窗口自绘标题栏图标。
+     */
+    void setThemeName(const QString &themeName);
+
 private:
     /*
      * 初始化窗口管理器界面。
@@ -82,7 +88,8 @@ private:
     QTabWidget *m_bottomTabs = nullptr;
     QMap<WindowArea, int> m_windowCounts;
     QMap<QString, QPair<QTabWidget *, QWidget *>> m_registeredWindows;
-    QList<QWidget *> m_floatingWindows;
+    QMap<QString, QWidget *> m_floatingWindows;
+    QString m_themeName = QStringLiteral("cyber-dark");
 };
 
 #endif // WINDOWMANAGER_H

@@ -30,6 +30,12 @@ public:
      */
     void setThemeName(const QString &themeName);
 
+    /*
+     * 设置皮肤切换按钮是否可见。
+     * visible 为 false 时隐藏皮肤按钮，适用于插件浮动窗口标题栏。
+     */
+    void setThemeButtonVisible(bool visible);
+
 signals:
     /*
      * 请求切换应用主题。

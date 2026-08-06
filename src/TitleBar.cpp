@@ -57,6 +57,13 @@ void TitleBar::setThemeName(const QString &themeName)
     emit themeIconChanged();
 }
 
+void TitleBar::setThemeButtonVisible(bool visible)
+{
+    if (m_themeButton) {
+        m_themeButton->setVisible(visible);
+    }
+}
+
 void TitleBar::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && window()) {
@@ -93,11 +100,11 @@ void TitleBar::mouseDoubleClickEvent(QMouseEvent *event)
 void TitleBar::setupUi()
 {
     setObjectName(QStringLiteral("TitleBar"));
-    setFixedHeight(42);
+    setFixedHeight(32);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(14, 0, 6, 0);
-    layout->setSpacing(6);
+    layout->setContentsMargins(12, 0, 4, 0);
+    layout->setSpacing(4);
 
     m_titleLabel = new QLabel(QStringLiteral("插件框架"), this);
     m_titleLabel->setObjectName(QStringLiteral("WindowTitle"));
@@ -110,24 +117,23 @@ void TitleBar::setupUi()
     m_minimizeButton = new QPushButton(this);
     m_minimizeButton->setObjectName(QStringLiteral("MinimizeButton"));
     m_minimizeButton->setToolTip(QStringLiteral("最小化"));
-    m_minimizeButton->setFixedSize(38, 28);
+    m_minimizeButton->setFixedSize(36, 28);
 
     m_maximizeButton = new QPushButton(this);
     m_maximizeButton->setObjectName(QStringLiteral("MaximizeButton"));
     m_maximizeButton->setToolTip(QStringLiteral("最大化"));
-    m_maximizeButton->setFixedSize(38, 28);
+    m_maximizeButton->setFixedSize(36, 28);
     updateMaximizeButtonState(false);
 
     m_closeButton = new QPushButton(this);
     m_closeButton->setObjectName(QStringLiteral("CloseButton"));
     m_closeButton->setToolTip(QStringLiteral("关闭"));
-    m_closeButton->setFixedSize(38, 28);
+    m_closeButton->setFixedSize(36, 28);
 
-    const QSize iconSize(18, 18);
-    m_themeButton->setIconSize(iconSize);
-    m_minimizeButton->setIconSize(iconSize);
-    m_maximizeButton->setIconSize(iconSize);
-    m_closeButton->setIconSize(iconSize);
+    m_themeButton->setIconSize(QSize(22, 22));
+    m_minimizeButton->setIconSize(QSize(16, 16));
+    m_maximizeButton->setIconSize(QSize(16, 16));
+    m_closeButton->setIconSize(QSize(16, 16));
     setThemeName(QStringLiteral("cyber-dark"));
 
     layout->addWidget(m_titleLabel);

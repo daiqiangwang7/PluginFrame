@@ -1,8 +1,45 @@
 #include "WindowManager.h"
 
+#include "TitleBar.h"
+
+#include <QFrame>
 #include <QSplitter>
 #include <QTabWidget>
 #include <QVBoxLayout>
+
+namespace {
+
+class FloatingWindowFrame : public QWidget
+{
+public:
+    explicit FloatingWindowFrame(const WindowDescriptor &descriptor, const QString &themeName)
+    {
+        setObjectName(QStringLiteral("FloatingWindowFrame"));
+        setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
+        resize(640, 420);
+
+        QVBoxLayout *layout = new QVBoxLayout(this);
+        layout->setContentsMargins(1, 1, 1, 1);
+        layout->setSpacing(0);
+
+        TitleBar *titleBar = new TitleBar(this);
+        titleBar->setTitle(descriptor.title);
+        titleBar->setThemeName(themeName);
+        titleBar->setThemeButtonVisible(false);
+
+        QFrame *separator = new QFrame(this);
+        separator->setObjectName(QStringLiteral("TitleSeparator"));
+        separator->setFixedHeight(1);
+        separator->setFrameShape(QFrame::NoFrame);
+
+        layout->addWidget(titleBar);
+        layout->addWidget(separator);
+        layout->addWidget(descriptor.widget, 1);
+        setWindowTitle(descriptor.title);
+    }
+};
+
+} // namespace
 
 WindowManager::WindowManager(QWidget *parent)
     : QWidget(parent)
@@ -38,6 +75,17 @@ int WindowManager::windowCount(WindowArea area) const
 
 bool WindowManager::activateWindow(const QString &id)
 {
+    if (m_floatingWindows.contains(id)) {
+        QWidget *window = m_floatingWindows.value(id);
+        if (!window) {
+            return false;
+        }
+        window->show();
+        window->raise();
+        window->activateWindow();
+        return true;
+    }
+
     if (!m_registeredWindows.contains(id)) {
         return false;
     }
@@ -56,6 +104,17 @@ bool WindowManager::activateWindow(const QString &id)
     tabs->setCurrentIndex(index);
     widget->setFocus();
     return true;
+}
+
+void WindowManager::setThemeName(const QString &themeName)
+{
+    m_themeName = themeName;
+    for (QWidget *window : m_floatingWindows) {
+        if (TitleBar *titleBar = window ? window->findChild<TitleBar *>() : nullptr) {
+            titleBar->setThemeName(m_themeName);
+            titleBar->setThemeButtonVisible(false);
+        }
+    }
 }
 
 void WindowManager::setupUi()
@@ -117,13 +176,11 @@ QTabWidget *WindowManager::tabWidgetForArea(WindowArea area) const
 
 void WindowManager::registerFloatingWindow(const WindowDescriptor &descriptor)
 {
-    QWidget *window = new QWidget;
-    QVBoxLayout *layout = new QVBoxLayout(window);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(descriptor.widget);
-    window->setWindowTitle(descriptor.title);
-    window->resize(640, 420);
-    window->show();
-    m_floatingWindows.append(window);
+    if (m_floatingWindows.contains(descriptor.id)) {
+        return;
+    }
+
+    QWidget *window = new FloatingWindowFrame(descriptor, m_themeName);
+    m_floatingWindows.insert(descriptor.id, window);
     m_windowCounts[WindowArea::Floating] = m_windowCounts.value(WindowArea::Floating) + 1;
 }

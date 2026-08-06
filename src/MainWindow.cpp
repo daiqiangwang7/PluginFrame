@@ -48,12 +48,15 @@ void MainWindow::setupUi()
 
     QFrame *titleSeparator = new QFrame(m_shellRoot);
     titleSeparator->setObjectName(QStringLiteral("TitleSeparator"));
-    titleSeparator->setFixedHeight(2);
+    titleSeparator->setFixedHeight(1);
     titleSeparator->setFrameShape(QFrame::NoFrame);
 
     m_windowManager = new WindowManager(m_shellRoot);
+    m_windowManager->setThemeName(m_themeManager->currentTheme());
     m_sidebar = new CyberSidebar(m_shellRoot);
+    m_sidebar->setThemeName(m_themeManager->currentTheme());
     connect(m_sidebar, &CyberSidebar::pageRequested, this, &MainWindow::handleDrawerPageRequested);
+    connect(m_sidebar, &CyberSidebar::windowRequested, this, &MainWindow::handleDrawerWindowRequested);
     m_statusBar = new StatusBarWidget(m_shellRoot);
 
     QWidget *workspace = new QWidget(m_shellRoot);
@@ -100,7 +103,11 @@ void MainWindow::loadPlugins()
             const auto records = m_pluginManager->pluginRecords();
             for (const PluginRecord &record : records) {
                 if (record.plugin == view) {
-                    area = config.pluginArea(record.metadata.id);
+                    if (config.pluginSettings.contains(record.metadata.id)) {
+                        area = config.pluginArea(record.metadata.id);
+                    } else if (record.metadata.hasArea) {
+                        area = windowAreaFromString(record.metadata.area);
+                    }
                     break;
                 }
             }
@@ -109,6 +116,9 @@ void MainWindow::loadPlugins()
                                              view->displayName(),
                                              area,
                                              viewWidget});
+            if (area == WindowArea::Floating && m_sidebar) {
+                m_sidebar->addWindowEntry(view->name(), view->displayName());
+            }
         }
     }
 
@@ -144,6 +154,12 @@ void MainWindow::toggleTheme()
         m_themeManager->toggleTheme(qApp);
         if (m_titleBar) {
             m_titleBar->setThemeName(m_themeManager->currentTheme());
+        }
+        if (m_windowManager) {
+            m_windowManager->setThemeName(m_themeManager->currentTheme());
+        }
+        if (m_sidebar) {
+            m_sidebar->setThemeName(m_themeManager->currentTheme());
         }
         updateStatusBar();
     }
@@ -186,4 +202,22 @@ void MainWindow::handleDrawerPageRequested(const QString &pageId)
     m_pluginManager->logService()->info(QStringLiteral("Host"),
                                         QStringLiteral("右侧抽屉入口暂未绑定窗口"),
                                         {{QStringLiteral("pageId"), pageId}});
+}
+
+void MainWindow::handleDrawerWindowRequested(const QString &windowId)
+{
+    if (!m_windowManager || !m_pluginManager || !m_pluginManager->logService()) {
+        return;
+    }
+
+    if (m_windowManager->activateWindow(windowId)) {
+        m_pluginManager->logService()->info(QStringLiteral("Host"),
+                                            QStringLiteral("打开浮动插件窗口"),
+                                            {{QStringLiteral("windowId"), windowId}});
+        return;
+    }
+
+    m_pluginManager->logService()->warning(QStringLiteral("Host"),
+                                           QStringLiteral("浮动插件窗口不存在"),
+                                           {{QStringLiteral("windowId"), windowId}});
 }

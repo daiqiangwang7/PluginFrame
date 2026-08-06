@@ -71,6 +71,12 @@ private:
      */
     void handleDrawerPageRequested(const QString &pageId);
 
+    /*
+     * 处理右侧抽屉浮动窗口请求。
+     * windowId 为窗口管理器中注册的浮动窗口标识。
+     */
+    void handleDrawerWindowRequested(const QString &windowId);
+
     QWidget *m_shellRoot = nullptr;
     CyberSidebar *m_sidebar = nullptr;
     StatusBarWidget *m_statusBar = nullptr;

@@ -57,7 +57,13 @@ private:
      */
     void publishTick();
 
+    /*
+     * 插件运行上下文。
+     */
     IPluginContext *m_context = nullptr;
+    /*
+     * 定时发布时间消息的后台定时器。
+     */
     QTimer *m_timer = nullptr;
 };
 

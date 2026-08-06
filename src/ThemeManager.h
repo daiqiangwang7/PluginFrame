@@ -49,6 +49,9 @@ public:
     QString toggleTheme(QApplication *app);
 
 private:
+    /*
+     * 当前已应用的主题名称。
+     */
     QString m_currentTheme = QStringLiteral("cyber-dark");
 };
 

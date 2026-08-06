@@ -32,7 +32,13 @@ private:
      */
     void appendRecord(const LogRecord &record);
 
+    /*
+     * 日志查看器绑定的日志服务。
+     */
     LogService *m_logService = nullptr;
+    /*
+     * 显示日志记录的表格控件。
+     */
     QTableWidget *m_table = nullptr;
 };
 

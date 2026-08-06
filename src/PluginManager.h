@@ -22,11 +22,29 @@ class PluginSettings;
  */
 enum class PluginState
 {
+    /*
+     * 插件动态库已加载。
+     */
     Loaded,
+    /*
+     * 插件已完成初始化。
+     */
     Initialized,
+    /*
+     * 插件已启动运行。
+     */
     Started,
+    /*
+     * 插件已停止。
+     */
     Stopped,
+    /*
+     * 插件被配置禁用。
+     */
     Disabled,
+    /*
+     * 插件加载、初始化或依赖处理失败。
+     */
     Failed
 };
 
@@ -36,12 +54,33 @@ enum class PluginState
  */
 struct PluginRecord
 {
+    /*
+     * 插件动态库加载器。
+     */
     QPluginLoader *loader = nullptr;
+    /*
+     * 插件接口实例。
+     */
     IPlugin *plugin = nullptr;
+    /*
+     * 插件动态库文件路径。
+     */
     QString filePath;
+    /*
+     * 插件内部名称。
+     */
     QString name;
+    /*
+     * 插件加载或启动过程中的错误信息。
+     */
     QString errorString;
+    /*
+     * 插件元数据信息。
+     */
     PluginMetadata metadata;
+    /*
+     * 插件当前生命周期状态。
+     */
     PluginState state = PluginState::Loaded;
 };
 
@@ -166,9 +205,21 @@ private:
      */
     void failUnresolvedDependencies(const QSet<int> &pendingIndexes);
 
+    /*
+     * 插件管理器持有的共享消息总线。
+     */
     MessageBus *m_messageBus = nullptr;
+    /*
+     * 传递给插件的共享运行上下文。
+     */
     PluginContext *m_context = nullptr;
+    /*
+     * 从应用配置读取的插件启用状态覆盖表。
+     */
     QHash<QString, bool> m_enabledOverrides;
+    /*
+     * 当前扫描和加载到的插件记录列表。
+     */
     QList<PluginRecord> m_records;
 };
 

@@ -8,13 +8,25 @@
 
 struct PluginConfig
 {
+    /*
+     * 插件是否启用。
+     */
     bool enabled = true;
+    /*
+     * 插件视图默认注册的窗口区域。
+     */
     WindowArea area = WindowArea::Central;
 };
 
 struct AppConfig
 {
+    /*
+     * 应用启动时默认使用的主题名称。
+     */
     QString defaultTheme = QStringLiteral("cyber-dark");
+    /*
+     * 按插件 ID 保存的插件配置表。
+     */
     QHash<QString, PluginConfig> pluginSettings;
 
     /*

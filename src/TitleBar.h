@@ -87,12 +87,33 @@ private:
      */
     void updateMaximizeButtonState(bool maximized);
 
+    /*
+     * 鼠标拖动窗口时记录的偏移坐标。
+     */
     QPoint m_dragPosition;
+    /*
+     * 当前主题名称，用于选择标题栏按钮图标。
+     */
     QString m_themeName = QStringLiteral("cyber-dark");
+    /*
+     * 标题栏左侧标题文本标签。
+     */
     QLabel *m_titleLabel = nullptr;
+    /*
+     * 皮肤切换按钮。
+     */
     QPushButton *m_themeButton = nullptr;
+    /*
+     * 窗口最小化按钮。
+     */
     QPushButton *m_minimizeButton = nullptr;
+    /*
+     * 窗口最大化或还原按钮。
+     */
     QPushButton *m_maximizeButton = nullptr;
+    /*
+     * 窗口关闭按钮。
+     */
     QPushButton *m_closeButton = nullptr;
 };
 

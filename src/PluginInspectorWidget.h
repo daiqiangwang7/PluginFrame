@@ -37,6 +37,9 @@ private:
      */
     void fillRecordRow(int row, const PluginRecord &record);
 
+    /*
+     * 显示插件诊断信息的表格控件。
+     */
     QTableWidget *m_table = nullptr;
 };
 

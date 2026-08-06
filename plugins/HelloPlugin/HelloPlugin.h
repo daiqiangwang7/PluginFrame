@@ -61,9 +61,21 @@ public:
     QString displayName() const override;
 
 private:
+    /*
+     * 插件运行上下文。
+     */
     IPluginContext *m_context = nullptr;
+    /*
+     * 显示宿主状态和欢迎文本的标签。
+     */
     QLabel *m_label = nullptr;
+    /*
+     * 显示时间服务消息的标签。
+     */
     QLabel *m_timeLabel = nullptr;
+    /*
+     * 插件提供给宿主承载的主界面部件。
+     */
     QWidget *m_widget = nullptr;
 };
 

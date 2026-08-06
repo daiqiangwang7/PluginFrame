@@ -13,9 +13,21 @@
  */
 enum class LogLevel
 {
+    /*
+     * 调试级别日志。
+     */
     Debug,
+    /*
+     * 普通信息级别日志。
+     */
     Info,
+    /*
+     * 警告级别日志。
+     */
     Warning,
+    /*
+     * 错误级别日志。
+     */
     Error
 };
 
@@ -25,10 +37,25 @@ enum class LogLevel
  */
 struct LogRecord
 {
+    /*
+     * 日志产生时间。
+     */
     QDateTime timestamp;
+    /*
+     * 日志等级。
+     */
     LogLevel level = LogLevel::Info;
+    /*
+     * 日志来源模块或插件名称。
+     */
     QString source;
+    /*
+     * 日志正文内容。
+     */
     QString message;
+    /*
+     * 日志附加上下文数据。
+     */
     QVariantMap context;
 };
 
@@ -120,7 +147,13 @@ private:
      */
     QString contextToString(const QVariantMap &context) const;
 
+    /*
+     * 当前日志落盘文件路径。
+     */
     QString m_logFilePath;
+    /*
+     * 内存中缓存的日志记录列表。
+     */
     QList<LogRecord> m_records;
 };
 

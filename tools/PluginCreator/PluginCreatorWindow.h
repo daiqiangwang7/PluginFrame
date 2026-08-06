@@ -94,6 +94,9 @@ private:
      */
     bool isViewPluginSelected() const;
 
+    /*
+     * Qt Designer 生成的插件创建向导界面对象。
+     */
     Ui::PluginCreatorWindow *ui = nullptr;
 };
 

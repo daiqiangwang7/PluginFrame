@@ -37,6 +37,9 @@ private:
      */
     void setupUi();
 
+    /*
+     * 显示主题、插件数量、服务数量和时间的摘要标签。
+     */
     QLabel *m_summaryLabel = nullptr;
 };
 

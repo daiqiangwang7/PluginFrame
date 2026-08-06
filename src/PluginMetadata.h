@@ -7,14 +7,41 @@
 
 struct PluginMetadata
 {
+    /*
+     * 插件唯一标识。
+     */
     QString id;
+    /*
+     * 插件内部名称。
+     */
     QString name;
+    /*
+     * 插件显示名称。
+     */
     QString displayName;
+    /*
+     * 插件版本号。
+     */
     QString version;
+    /*
+     * 插件类型，当前支持 view 和 service。
+     */
     QString type;
+    /*
+     * 插件视图区域配置文本。
+     */
     QString area;
+    /*
+     * 插件依赖的其他插件 ID 列表。
+     */
     QStringList dependencies;
+    /*
+     * 插件是否启用。
+     */
     bool enabled = true;
+    /*
+     * 元数据中是否显式配置了窗口区域。
+     */
     bool hasArea = false;
 
     /*

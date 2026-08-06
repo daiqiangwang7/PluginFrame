@@ -44,9 +44,21 @@ public:
     LogService *logService() const override;
 
 private:
+    /*
+     * 共享插件能力注册中心。
+     */
     CapabilityRegistry *m_capabilityRegistry = nullptr;
+    /*
+     * 共享日志服务。
+     */
     LogService *m_logService = nullptr;
+    /*
+     * 共享消息总线。
+     */
     MessageBus *m_messageBus = nullptr;
+    /*
+     * 共享插件配置服务。
+     */
     PluginSettings *m_pluginSettings = nullptr;
 };
 

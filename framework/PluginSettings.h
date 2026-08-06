@@ -65,6 +65,9 @@ private:
      */
     QString safePluginFileName(const QString &pluginId) const;
 
+    /*
+     * 插件私有配置文件保存目录。
+     */
     QString m_basePath;
 };
 

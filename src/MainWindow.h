@@ -77,12 +77,33 @@ private:
      */
     void handleDrawerWindowRequested(const QString &windowId);
 
+    /*
+     * 主窗口外壳根部件。
+     */
     QWidget *m_shellRoot = nullptr;
+    /*
+     * 右侧功能抽屉。
+     */
     CyberSidebar *m_sidebar = nullptr;
+    /*
+     * 底部状态栏部件。
+     */
     StatusBarWidget *m_statusBar = nullptr;
+    /*
+     * 自绘标题栏。
+     */
     TitleBar *m_titleBar = nullptr;
+    /*
+     * 多区域窗口管理器。
+     */
     WindowManager *m_windowManager = nullptr;
+    /*
+     * 插件生命周期管理器。
+     */
     PluginManager *m_pluginManager = nullptr;
+    /*
+     * 应用主题管理器。
+     */
     ThemeManager *m_themeManager = nullptr;
 };
 

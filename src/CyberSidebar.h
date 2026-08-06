@@ -17,9 +17,21 @@ class QVBoxLayout;
  */
 struct DrawerEntry
 {
+    /*
+     * 抽屉入口标识，可表示页面 ID 或窗口 ID。
+     */
     QString id;
+    /*
+     * 抽屉入口显示文本。
+     */
     QString text;
+    /*
+     * 抽屉入口使用的图标名称。
+     */
     QString iconName;
+    /*
+     * 是否为插件浮动窗口入口。
+     */
     bool windowEntry = false;
 };
 
@@ -120,19 +132,61 @@ private:
      */
     QString drawerIconPath(const QString &iconName) const;
 
+    /*
+     * 抽屉展开后显示的内容容器。
+     */
     QWidget *m_contentWidget = nullptr;
+    /*
+     * 抽屉右侧贴边把手按钮。
+     */
     QPushButton *m_handleButton = nullptr;
+    /*
+     * 抽屉入口按钮网格容器。
+     */
     QWidget *m_entriesWidget = nullptr;
+    /*
+     * 抽屉入口按钮网格布局。
+     */
     QGridLayout *m_entriesLayout = nullptr;
+    /*
+     * 抽屉内容区主布局。
+     */
     QVBoxLayout *m_contentLayout = nullptr;
+    /*
+     * 抽屉分页控件容器。
+     */
     QWidget *m_pagerWidget = nullptr;
+    /*
+     * 抽屉上一页按钮。
+     */
     QPushButton *m_previousButton = nullptr;
+    /*
+     * 抽屉下一页按钮。
+     */
     QPushButton *m_nextButton = nullptr;
+    /*
+     * 抽屉当前页码标签。
+     */
     QLabel *m_pageLabel = nullptr;
+    /*
+     * 抽屉全部入口数据。
+     */
     QList<DrawerEntry> m_entries;
+    /*
+     * 当前页创建出来的入口按钮列表。
+     */
     QList<QToolButton *> m_entryButtons;
+    /*
+     * 当前主题名称，用于选择深色或浅色图标。
+     */
     QString m_themeName = QStringLiteral("cyber-dark");
+    /*
+     * 当前抽屉入口页码。
+     */
     int m_currentPage = 0;
+    /*
+     * 抽屉是否处于展开状态。
+     */
     bool m_expanded = false;
 };
 

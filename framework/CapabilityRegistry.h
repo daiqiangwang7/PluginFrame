@@ -11,10 +11,25 @@
  */
 struct PluginCapability
 {
+    /*
+     * 能力所属插件的唯一标识。
+     */
     QString pluginId;
+    /*
+     * 能力自身的唯一标识。
+     */
     QString id;
+    /*
+     * 能力类型，例如 view、service、command 或 settings。
+     */
     QString type;
+    /*
+     * 能力在界面中的显示名称。
+     */
     QString displayName;
+    /*
+     * 能力目标对象名称，用于宿主定位具体窗口或命令。
+     */
     QString target;
 };
 
@@ -61,6 +76,9 @@ signals:
     void capabilitiesChanged();
 
 private:
+    /*
+     * 当前已注册的全部插件能力列表。
+     */
     QList<PluginCapability> m_capabilities;
 };
 
